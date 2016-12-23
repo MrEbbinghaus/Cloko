@@ -7,6 +7,6 @@
               :builds [{:id "dev"
                         :source-paths ["src"]
                         :figwheel true
-                        :compiler {:main "cloko.core"}}]})
+                        :compiler {:main "cloko.frontend"}}]})
 
 
