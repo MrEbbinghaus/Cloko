@@ -2,7 +2,7 @@
 
 (def initial-game-state {:world {
                                    :size [10, 10],
-                                   :planets #{
+                                   :planets [
                                               {:position [1, 1]
                                                :owner :player1
                                                :ships-per-turn 4
@@ -10,7 +10,7 @@
                                               {:position [8, 8]
                                                :owner :player2
                                                :ships-per-turn 4
-                                               :ships 10}}},
+                                               :ships 10}]},
                            :movements [],
                            :whosTurn :player1,})
 
@@ -20,11 +20,26 @@
 
 (defn whose-turn [] (get @game-state :whosTurn))
 
+(defn- place-planets [world planets]
+  (reduce #(assoc-in %1 (reverse (:position %2)) (:owner %2)) world planets))
+
+(defn- world-as-dots [[x y]]
+  (vec (repeat y (vec (repeat x :.)))))
+
 (defn show-board! []
-  (let [board (get @game-state :world)
-        [size-x size-y] (get board :size)]
-    (->> (repeat (* size-x size-y) ".")
-         (partition size-x)
+  (let [world (get @game-state :world)
+        planets (get world :planets)
+        dims (get world :size)]
+    (->> planets
+         (place-planets (world-as-dots dims))
          (interpose "\n")
          (flatten)
-         )))
+         (replace {:. "." :player1 "1" :player2 "2" :neutral "N"})
+         (print))))
+
+(defn players-turn? [player] (= player (whose-turn)))
+
+(defn update-planet
+  "Updates the ship amount on this planet by adding the ship generation factor"
+  [planet]
+  (update-in planet [:ships] + (:ships-per-turn planet)))
