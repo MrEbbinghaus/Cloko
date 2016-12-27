@@ -26,7 +26,8 @@
                                       :ships 10
                                       :turns-until-arrival 3}]
 
-                         :whosTurn :player1})
+                         :whosTurn :player1
+                         :turn 0})
 
 (def game-state (atom initial-game-state))
 
@@ -79,11 +80,14 @@
          (* *distance-factor*)
          (Math/ceil))))
 
+(defn get-planet
+  "Returns the function with position"
+  [position planets]
+  (first (filter #(= (:position %) position) planets)))
+
 (defn player-owns-planet?
-  "Returns true if "
-  [player position]
-  (let [planets (get-in @game-state [:world :planets])]
-      (some #(and
-               (= (:position %) position)
-               (= (:owner %) player))
-            planets)))
+  "Returns true if player owns the planet at position position."
+  [player position planets]
+  (let [planet (get-planet position planets)]
+    (= player (:owner planet))))
+
