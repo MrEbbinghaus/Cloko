@@ -114,3 +114,10 @@
       (not (player-owns-planet? current-player from planets)) :not-players-planet
       (not (enough-ships-on-planet? origin-planet amount)) :not-enough-ships
       :everything-fine (swap! game-state add-movement from to current-player amount (distance from to)))))
+
+(defn movements! []
+  (let [state @game-state
+        movements (:movements state)
+        current-player (:whosTurn state)
+        cols-to-print [:origin :target :ships :turns-until-arrival]]
+    (cljs.pprint/print-table cols-to-print (filter #(= current-player (:owner %)) movements))))
