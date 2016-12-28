@@ -91,3 +91,26 @@
   (let [planet (get-planet position planets)]
     (= player (:owner planet))))
 
+(defn add-movement
+  "Returns a movements map with an entry of a new movement"
+  [old-state from to player amount turns]
+  (update-in old-state [:movements] conj {:origin from
+                                          :target to
+                                          :owner player
+                                          :ships amount
+                                          :turns-until-arrival turns}))
+
+(defn enough-ships-on-planet?
+  [planet amount]
+  (> (:ships planet) amount))
+
+(defn send!
+  [from to amount]
+  (let [state @game-state
+        planets (get-in state [:world :planets])
+        origin-planet (get-planet from planets)
+        current-player (:whosTurn state)]
+    (cond
+      (not (player-owns-planet? current-player from planets)) :not-players-planet
+      (not (enough-ships-on-planet? origin-planet amount)) :not-enough-ships
+      :everything-fine (swap! game-state add-movement from to current-player amount (distance from to)))))
