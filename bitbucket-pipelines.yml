@@ -4,6 +4,6 @@ pipelines:
   default:
     - step:
         script:
-          - lein with-profile test kibit
+          - lein with-profile test kibit src/
           
  
