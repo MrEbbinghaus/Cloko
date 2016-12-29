@@ -10,19 +10,16 @@
                                      :size    [9, 9],
                                      :planets {
                                                [1, 1]
-                                               {:position       [1, 1]
-                                                :owner          :player1
+                                               {:owner          :player1
                                                 :ships-per-turn 4
                                                 :ships          10}
                                                [7, 7]
-                                               {:position       [7, 7]
-                                                :owner          :player2
+                                               {:owner          :player2
                                                 :ships-per-turn 4
                                                 :ships          10}
 
                                                [4, 4]
-                                               {:position [4, 4]
-                                                :owner :neutral
+                                               {:owner :neutral
                                                 :ships-per-turn 2
                                                 :ships 100}}}
 
