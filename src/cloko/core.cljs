@@ -117,7 +117,14 @@
         cols-to-print [:origin :target :ships :turns-until-arrival]]
     (cljs.pprint/print-table cols-to-print (filter #(= current-player (:owner %)) movements))))
 
-(defn generate-ships
+(defn- generate-ships
   "Updates the ship amount on this planet by adding the ship generation factor."
   [planet]
   (update-in planet [:ships] + (:ships-per-turn planet)))
+
+(defn- arrived-fleets
+  "Returns a map of keys of planets and a collection of arriving fleets"
+  [movements]
+  (->> movements
+       (filter #(zero? (:turns-until-arrival %)))
+       (group-by :target)))
