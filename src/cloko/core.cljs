@@ -18,7 +18,6 @@
                                                {:owner          :player2
                                                 :ships-per-turn 4
                                                 :ships          10}
-
                                                [4, 4]
                                                {:owner :neutral
                                                 :ships-per-turn 2
@@ -133,7 +132,7 @@
        (group-by :target)))
 
 (defn- fight-for-planet
-  "Gets a planet and a collection of fleets and returns an fought for planet."
+  "Gets a planet and a collection of fleets and returns an updated planet which was fought for."
   [planet fleets]
   (let []))
 
@@ -145,12 +144,10 @@
   "Gets a collection of fleets and returns a collection where all fleets with common owner are summed."
   [fleets]
   (let [g-fleets (group-by :owner fleets)]
-    (map (fn [[k v]] {:owner k, :ships (how-many-ships v)}  fleets))))
-
-
+    (map (fn [[k v]] (hash-map :owner k, :ships (how-many-ships v))) g-fleets)))
 
 (defn- crunch-fleets
   "Gets a collection of fleets and returns a single fleet of the victor."
-  ([fleets] (let [[f s] (sort-by :ships > fleets)]
-                (update-in f [:ships] - (:ships s)))))
-
+  [fleets]
+  (let [[f s] (sort-by :ships > (sum-by-owner fleets))]
+    (update-in f [:ships] - (:ships s))))
