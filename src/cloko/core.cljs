@@ -1,4 +1,5 @@
-(ns cloko.core)
+(ns cloko.core
+  (:require [cljs.pprint]))
 
 (def *distance-factor* 0.5)
 (def *print-symbols* {:. "."
@@ -101,14 +102,16 @@
 
 (defn send!
   [from to amount]
-  (let [state @game-state
-        planets (get-in state [:world :planets])
-        origin-planet (get planets from)
-        current-player (:whosTurn state)]
-    (cond
-      (not (player-owns-planet? current-player from planets)) :not-players-planet
-      (not (enough-ships-on-planet? origin-planet amount)) :not-enough-ships
-      :everything-fine (swap! game-state add-movement from to current-player amount (distance from to)))))
+  (if (= from to)
+    (let [state @game-state
+          planets (get-in state [:world :planets])
+          origin-planet (get planets from)
+          current-player (:whosTurn state)]
+      (cond
+        (not (player-owns-planet? current-player from planets)) :not-players-planet
+        (not (enough-ships-on-planet? origin-planet amount)) :not-enough-ships
+        :everything-fine (swap! game-state add-movement from to current-player amount (distance from to))))
+    @game-state))
 
 (defn movements! []
   (let [state @game-state
@@ -117,14 +120,37 @@
         cols-to-print [:origin :target :ships :turns-until-arrival]]
     (cljs.pprint/print-table cols-to-print (filter #(= current-player (:owner %)) movements))))
 
-(defn- generate-ships
+(defn- generate-ships-on-planet
   "Updates the ship amount on this planet by adding the ship generation factor."
   [planet]
   (update-in planet [:ships] + (:ships-per-turn planet)))
 
 (defn- arrived-fleets
-  "Returns a map of keys of planets and a collection of arriving fleets"
+  "Returns a map of keys of planets and a collection of arriving fleets."
   [movements]
   (->> movements
        (filter #(zero? (:turns-until-arrival %)))
        (group-by :target)))
+
+(defn- fight-for-planet
+  "Gets a planet and a collection of fleets and returns an fought for planet."
+  [planet fleets]
+  (let []))
+
+(defn- how-many-ships
+  [fleets]
+  (reduce #(+ %1 (:ships %2)) 0 fleets))
+
+(defn- sum-by-owner
+  "Gets a collection of fleets and returns a collection where all fleets with common owner are summed."
+  [fleets]
+  (let [g-fleets (group-by :owner fleets)]
+    (map (fn [[k v]] {:owner k, :ships (how-many-ships v)}  fleets))))
+
+
+
+(defn- crunch-fleets
+  "Gets a collection of fleets and returns a single fleet of the victor."
+  ([fleets] (let [[f s] (sort-by :ships > fleets)]
+                (update-in f [:ships] - (:ships s)))))
+

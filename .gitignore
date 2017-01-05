@@ -78,3 +78,4 @@ fabric.properties
 # *.ipr
 
 # End of https://www.gitignore.io/api/clojure,leiningen,intellij
+/resources/public/cljs/
