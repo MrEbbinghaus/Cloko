@@ -1,6 +1,9 @@
 (ns cloko.core-test
  (:require
    [cljs.test :refer-macros [is testing]]
+   [clojure.test.check :as tc]
+   [clojure.test.check.generators :as gen]
+   [clojure.test.check.properties :as prop :include-macros true]
    [devcards.core :refer-macros [deftest]]
    [cloko.core]))
 
@@ -14,12 +17,12 @@
            (is (= 42
                   (cloko.core/how-many-ships [{:ships 25} {:ships 7} {:ships 10}])))))
 
-(deftest crunch-fleets-test
+(deftest fight-vs-fleets-test
          (testing "Single fleet per owner"
            (is (=
                  {:owner :player1
                   :ships 5}
-                 (cloko.core/crunch-fleets
+                 (cloko.core/fight-vs-fleets
                    [{:owner :player1 :ships 10}
                     {:owner :player2 :ships 5}
                     {:owner :player3 :ships 3}]))))
@@ -27,7 +30,7 @@
            (is (=
                  {:owner :player1
                   :ships 5}
-                 (cloko.core/crunch-fleets
+                 (cloko.core/fight-vs-fleets
                    [{:owner :player1 :ships 7}
                     {:owner :player2 :ships 5}
                     {:owner :player3 :ships 3}
@@ -77,3 +80,19 @@
                    [{:owner :player1 :ships 15}
                     {:owner :player2 :ships 32}
                     {:owner :player3 :ships 20}])))))
+
+(def fight-prop
+  (prop/for-all [a gen/nat
+                 d gen/nat
+                 b gen/double]
+                (let [result (cloko.core/fight a d b)]
+                  (and
+                    (<= (- a) result d)
+                    (if (= b 0) ((if (< a d) >= <=) result 0) true)))))
+
+
+(deftest fight-test
+         (testing "Fight propertys."
+           (let [check (tc/quick-check 100 fight-prop)]
+             (print "fight-test smallest: " (get-in check [:shrunk :smallest]))
+             (is (:result check)))))

@@ -1,7 +1,9 @@
 (ns cloko.core
-  (:require [cljs.pprint]))
+  (:require [cljs.pprint]
+            [cljs.spec]))
 
 (def *distance-factor* 0.5)
+(def *defence-bonus* 1.1)
 (def *print-symbols* {:. "."
                       :player1 "1"
                       :player2 "2"
@@ -131,11 +133,6 @@
        (filter #(zero? (:turns-until-arrival %)))
        (group-by :target)))
 
-(defn- fight-for-planet
-  "Gets a planet and a collection of fleets and returns an updated planet which was fought for."
-  [planet fleets]
-  (let []))
-
 (defn- how-many-ships
   [fleets]
   (reduce #(+ %1 (:ships %2)) 0 fleets))
@@ -146,8 +143,37 @@
   (let [g-fleets (group-by :owner fleets)]
     (map (fn [[k v]] (hash-map :owner k, :ships (how-many-ships v))) g-fleets)))
 
-(defn- crunch-fleets
+(defn- fight-vs-fleets
   "Gets a collection of fleets and returns a single fleet of the victor."
   [fleets]
   (let [[f s] (sort-by :ships > (sum-by-owner fleets))]
     (update-in f [:ships] - (:ships s))))
+
+(defn- conquer-planet
+  [new-owner planet]
+  (assoc-in planet [:owner] new-owner))
+
+(defn- fight
+  "Calculates the remaining ships. A negativ number indicates a win of the attacker.
+  This"
+  ([a d] (- d a))
+  ([a d b] (fight a d)))
+
+(defn- fight-vs-planet
+  "Gets a planet and an enemy fleet and returns an updated planet"
+  [planet fleet]
+  (let [battle-result (fight (:ships planet) (:ships fleet))
+        conquer (if (< 0 battle-result)
+                  (partial conquer-planet (:owner fleet))
+                  identity)]
+    (conquer (assoc-in planet [:ships] (Math/abs battle-result)))))
+
+
+(defn- fight-for-planet
+  "Gets a planet and a collection of fleets and returns an updated planet which was fought for."
+  [planet fleets]
+  (let [winner (fight-vs-fleets fleets)]
+    (if (= (:owner planet) (:owner winner))
+      (update-in planet [:ships] + (:ships winner))
+      (fight-vs-planet planet winner))))
+
