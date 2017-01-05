@@ -5,5 +5,5 @@
    [cloko.core]))
 
 (deftest distance-test
-  (testing "Places next to each other are at least 1 distance."
+  (testing "Planets next to each other are at least 1 distance."
     (is (< 0 (cloko.core/distance [0 0] [1 0])))))
