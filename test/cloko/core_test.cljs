@@ -109,8 +109,8 @@
                                          :ships-per-turn 4
                                          :ships          6}}}
                   :movements []
-                  :whosTurn :player1
-                  :turn 1
+                  :whosTurn 0
+                  :round 1
                   :players [:player1 :player2]}
                  (cloko.core/end-round {:world     {
                                                     :planets {
@@ -127,9 +127,9 @@
                                                      :target [7, 7]
                                                      :owner :player1
                                                      :ships 20
-                                                     :turns-until-arrival 1}]
-                                        :whosTurn :player1
-                                        :turn 0
+                                                     :rounds-until-arrival 1}]
+                                        :whosTurn 0
+                                        :round 0
                                         :players [:player1 :player2]})))))
 
 (deftest arrived-fleets-test
@@ -138,12 +138,12 @@
                            :target [1, 1]
                            :owner :player1
                            :ships 10
-                           :turns-until-arrival 0}]}
+                           :rounds-until-arrival 0}]}
                   (cloko.core/arrived-fleets [{:origin [7, 7]
                                                :target [1, 1]
                                                :owner :player1
                                                :ships 10
-                                               :turns-until-arrival 0}])))))
+                                               :rounds-until-arrival 0}])))))
 
 (deftest fight-for-planets-test
          (testing "Attack with conquest"
@@ -158,7 +158,7 @@
                                                 {[1, 1] [{:target [1, 1]
                                                           :owner :player2
                                                           :ships 4
-                                                          :turns-until-arrival 0}]})))))
+                                                          :rounds-until-arrival 0}]})))))
 
 (deftest generate-all-ships-test
          (testing "Basic"

@@ -29,17 +29,19 @@
                                       :target [7, 7]
                                       :owner :player1
                                       :ships 10
-                                      :turns-until-arrival 3}]
+                                      :rounds-until-arrival 3}]
 
-                         :whosTurn :player1
-                         :turn 0
+                         :whosTurn 0
+                         :round 0
                          :players [:player1 :player2]})
 
 (def game-state (atom initial-game-state))
 
 (defn init! [] (reset! game-state initial-game-state))
 
-(defn whose-turn [] (get @game-state :whosTurn))
+(defn whose-turn []
+  (let [game-state @game-state]
+    (get-in game-state [:players (:whosTurn game-state)])))
 
 (defn- place-planets [world planets]
   (reduce #(assoc-in %1 (reverse (get %2 0)) (get-in %2 [1 :owner])) world planets))
@@ -96,15 +98,15 @@
                                       :target to
                                       :owner player
                                       :ships amount
-                                      :turns-until-arrival turns}))))
+                                      :rounds-until-arrival turns}))))
 
 (defn- update-movements
   [movements]
-  (map #(update-in % [:turns-until-arrival] dec) movements))
+  (map #(update-in % [:rounds-until-arrival] dec) movements))
 
 (defn- clear-movements
   [movements]
-  (filter #(pos? (:turns-until-arrival %)) movements))
+  (filter #(pos? (:rounds-until-arrival %)) movements))
 
 (defn- enough-ships-on-planet?
   [planet amount]
@@ -116,7 +118,7 @@
     (let [state @game-state
           planets (get-in state [:world :planets])
           origin-planet (get planets from)
-          current-player (:whosTurn state)]
+          current-player (get-in state [:players (:whosTurn state)])]
       (cond
         (not (player-owns-planet? current-player from planets)) :not-players-planet
         (not (enough-ships-on-planet? origin-planet amount)) :not-enough-ships
@@ -126,8 +128,8 @@
 (defn movements! []
   (let [state @game-state
         movements (:movements state)
-        current-player (:whosTurn state)
-        cols-to-print [:origin :target :ships :turns-until-arrival]]
+        current-player (get-in state [:players (:whosTurn state)])
+        cols-to-print [:origin :target :ships :rounds-until-arrival]]
     (cljs.pprint/print-table cols-to-print (filter #(= current-player (:owner %)) movements))))
 
 (defn- map-vals
@@ -144,7 +146,7 @@
   "Returns a map of keys of planets and a collection of arriving fleets."
   [movements]
   (->> movements
-       (filter #(zero? (:turns-until-arrival %)))
+       (filter #(zero? (:rounds-until-arrival %)))
        (group-by :target)))
 
 (defn- how-many-ships
@@ -202,4 +204,10 @@
       (update-in [:movements] update-movements)
       (#(update-in % [:world :planets] fight-for-planets (arrived-fleets (:movements %))))
       (update-in [:movements] clear-movements)
-      (update-in [:turn] inc)))
+      (update-in [:round] inc)))
+
+(defn end-turn!
+  []
+  (swap! game-state #(if (>= (inc (:whosTurn %)) (count (:players %)))
+                       (assoc-in (end-round %) [:whosTurn] 0)
+                       (update-in % [:whosTurn] inc))))

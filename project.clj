@@ -1,4 +1,4 @@
-(defproject cloko "0.0.1"
+(defproject cloko "0.9.0"
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.9.293"]
                  [org.clojure/test.check "0.9.0"]
