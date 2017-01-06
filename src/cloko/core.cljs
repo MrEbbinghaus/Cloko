@@ -26,13 +26,14 @@
                                                 :ships 100}}}
 
                          :movements [{:origin [1, 1]
-                                      :target [8, 8]
+                                      :target [7, 7]
                                       :owner :player1
                                       :ships 10
                                       :turns-until-arrival 3}]
 
                          :whosTurn :player1
-                         :turn 0})
+                         :turn 0
+                         :players [:player1 :player2]})
 
 (def game-state (atom initial-game-state))
 
@@ -97,7 +98,15 @@
                                       :ships amount
                                       :turns-until-arrival turns}))))
 
-(defn enough-ships-on-planet?
+(defn- update-movements
+  [movements]
+  (map #(update-in % [:turns-until-arrival] dec) movements))
+
+(defn- clear-movements
+  [movements]
+  (filter #(pos? (:turns-until-arrival %)) movements))
+
+(defn- enough-ships-on-planet?
   [planet amount]
   (> (:ships planet) amount))
 
@@ -121,10 +130,15 @@
         cols-to-print [:origin :target :ships :turns-until-arrival]]
     (cljs.pprint/print-table cols-to-print (filter #(= current-player (:owner %)) movements))))
 
-(defn- generate-ships-on-planet
-  "Updates the ship amount on this planet by adding the ship generation factor."
-  [planet]
-  (update-in planet [:ships] + (:ships-per-turn planet)))
+(defn- map-vals
+  "Applys an f to every value of a map. Returns a new map with same keys."
+  [f m]
+  (apply hash-map (mapcat (fn [[k v]] [k (f k v)]) m)))
+
+(defn- generate-all-ships
+  "Generates ships on all planets"
+  [planets]
+  (map-vals #(update-in %2 [:ships] + (get %2 :ships-per-turn)) planets))
 
 (defn- arrived-fleets
   "Returns a map of keys of planets and a collection of arriving fleets."
@@ -162,12 +176,11 @@
 (defn- fight-vs-planet
   "Gets a planet and an enemy fleet and returns an updated planet"
   [planet fleet]
-  (let [battle-result (fight (:ships planet) (:ships fleet))
-        conquer (if (< 0 battle-result)
+  (let [battle-result (fight (:ships fleet) (:ships planet))
+        conquer (if (neg? battle-result)
                   (partial conquer-planet (:owner fleet))
                   identity)]
     (conquer (assoc-in planet [:ships] (Math/abs battle-result)))))
-
 
 (defn- fight-for-planet
   "Gets a planet and a collection of fleets and returns an updated planet which was fought for."
@@ -177,3 +190,16 @@
       (update-in planet [:ships] + (:ships winner))
       (fight-vs-planet planet winner))))
 
+(defn- fight-for-planets
+  "Returns fought for planets"
+  [planets arrived-fleets]
+  (map-vals #(fight-for-planet %2 (get arrived-fleets %1 [])) planets))
+
+(defn- end-round
+  [game-state]
+  (-> game-state
+      (update-in [:world :planets] generate-all-ships)
+      (update-in [:movements] update-movements)
+      (#(update-in % [:world :planets] fight-for-planets (arrived-fleets (:movements %))))
+      (update-in [:movements] clear-movements)
+      (update-in [:turn] inc)))
