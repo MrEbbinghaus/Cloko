@@ -1,6 +1,6 @@
 (ns cloko.core
-  (:require [cljs.pprint]
-            [cljs.spec]))
+  (:require [cljs.pprint :as pprint]
+            [reagent.core :as reagent]))
 
 (def *distance-factor* 0.5)
 (def *defence-bonus* 1.1)
@@ -35,13 +35,14 @@
                          :round 0
                          :players [:player1 :player2]})
 
-(def game-state (atom initial-game-state))
+(def game-state (reagent/atom initial-game-state))
 
 (defn init! [] (reset! game-state initial-game-state))
 
-(defn whose-turn []
-  (let [game-state @game-state]
-    (get-in game-state [:players (:whosTurn game-state)])))
+(defn whose-turn
+  ([] (whose-turn @game-state))
+  ([state] (get-in state [:players (:whosTurn state)])))
+
 
 (defn- place-planets [world planets]
   (reduce #(assoc-in %1 (reverse (get %2 0)) (get-in %2 [1 :owner])) world planets))
@@ -118,7 +119,7 @@
     (let [state @game-state
           planets (get-in state [:world :planets])
           origin-planet (get planets from)
-          current-player (get-in state [:players (:whosTurn state)])]
+          current-player (whose-turn state)]
       (cond
         (not (player-owns-planet? current-player from planets)) :not-players-planet
         (not (enough-ships-on-planet? origin-planet amount)) :not-enough-ships
@@ -128,9 +129,12 @@
 (defn movements! []
   (let [state @game-state
         movements (:movements state)
-        current-player (get-in state [:players (:whosTurn state)])
         cols-to-print [:origin :target :ships :rounds-until-arrival]]
-    (cljs.pprint/print-table cols-to-print (filter #(= current-player (:owner %)) movements))))
+    (pprint/print-table cols-to-print (filter #(= (whose-turn state) (:owner %)) movements))))
+
+(defn player-movements [state]
+  (let [movements (:movements state)]
+    (filter #(= (whose-turn state) (:owner %)) movements)))
 
 (defn- map-vals
   "Applys an f to every value of a map. Returns a new map with same keys."
