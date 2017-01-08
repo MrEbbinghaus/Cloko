@@ -18,7 +18,6 @@
   (apply conj [:tr] (mapv #(field (get-in planets [[% x] :owner] nil)) (range y-size))))
 
 (defn board []
-  (core/init!)
   (let [state @core/game-state
         [x-size y-size] (get-in state [:world :size])
         planets (get-in state [:world :planets])]
@@ -34,6 +33,7 @@
      [:div (movement-info)]]))
 
 (defn ^:export main []  ;; do not forget the export
+  (core/init!)
   (r/render [app]
             (.getElementById js/document "app")))
 
