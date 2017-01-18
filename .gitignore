@@ -80,6 +80,8 @@ fabric.properties
 # End of https://www.gitignore.io/api/clojure,leiningen,intellij
 /resources/public/cljs/
 /resources/public/.sass-cache/*
+.sass-cache
 *.css
 *.css.map
 /node_modules/
+cloko_deploy_key

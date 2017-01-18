@@ -8,4 +8,8 @@ script:
   - lein test
 
 after_success:
+  - openssl aes-256-cbc -K $encrypted_67ee34555b20_key -iv $encrypted_67ee34555b20_iv -in cloko_deploy_key.enc -out cloko_deploy_key -d
+  - eval "$(ssh-agent -s)"
+  - chmod 600 cloko_deploy_key
+  - ssh-add cloko_deploy_key
   - ./deploy.sh
