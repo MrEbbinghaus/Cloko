@@ -1,4 +1,4 @@
 language: clojure
 
 script:
-  lein doo
+  lein doo once
