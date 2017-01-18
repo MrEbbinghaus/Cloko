@@ -82,3 +82,4 @@ fabric.properties
 /resources/public/.sass-cache/*
 *.css
 *.css.map
+/node_modules/
