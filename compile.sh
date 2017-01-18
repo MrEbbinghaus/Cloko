@@ -2,8 +2,7 @@
 
 set -e # Exit with nonzero exit code if anything fails
 
-rm -rf out
-mkdir out
+mkdir -p out
 lein clean
 lein compile
 sass out/css:out/css
