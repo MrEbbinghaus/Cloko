@@ -5,7 +5,7 @@ install:
   - lein deps
 
 script:
-  - lein doo once
+  - lein test
 
 after_success:
   - ./deploy.sh
