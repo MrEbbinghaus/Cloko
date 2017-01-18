@@ -23,9 +23,6 @@ SHA=`git rev-parse --verify HEAD`
 # Clone the existing gh-pages for this repo into out/
 git clone $REPO --branch $TARGET_BRANCH --single-branch out
 
-# Clean out existing contents
-rm -rf out/* || exit 0
-
 # Run our compile script
 doCompile
 
