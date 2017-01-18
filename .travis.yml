@@ -1,4 +1,11 @@
 language: clojure
 
+install:
+  - gem install sass
+  - lein deps
+
 script:
-  lein doo once
+  - lein doo once
+
+after_success:
+  - ./deploy.sh

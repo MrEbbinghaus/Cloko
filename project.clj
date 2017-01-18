@@ -20,10 +20,15 @@
         :alias {:default [:phantom]}
         :paths {:phantom "phantomjs --web-security=false"}}
 
+  :aliases {"test" ["doo" "once"]
+            "compile" ["cljsbuild" "once" "min"]}
+
   :profiles {:kibit {:plugins [[lein-kibit "0.1.3"]]}}
-  :clean-targets ^{:protect false} [:target-path "resources/public/cljs/*" "out"]
+
+  :clean-targets ^{:protect false} [:target-path "resources/public/cljs/"]
+
   :cljsbuild {
-              :test-commands {"test" ["lein" "doo"]}
+              :test-commands {"test" ["lein" "doo" "once"]}
               :builds {:dev {:source-paths ["src"]
                              :figwheel true
                              :compiler {:main "cloko.frontend"
@@ -32,7 +37,7 @@
                                         :source-map true
                                         :asset-path "cljs/dev/out"
                                         :output-dir "resources/public/cljs/dev/out"
-                                        :output-to "resources/public/cljs/dev/main.js"}}
+                                        :output-to "resources/public/cljs/main.js"}}
                        :test {
                               :source-paths ["src" "test"]
                               :compiler {:main runners.doo
@@ -54,6 +59,6 @@
                              :compiler {
                                         :optimizations :advanced
                                         :elide-asserts true
-                                        :output-to "resources/public/cljs/min/main.js.min"}}}})
+                                        :output-to "resources/public/cljs/main.js"}}}})
 
 
