@@ -1,4 +1,4 @@
-(defproject cloko "0.9.0"
+(defproject cloko "0.1.0"
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.9.293"]
                  [org.clojure/test.check "0.9.0"]
@@ -8,12 +8,18 @@
   :plugins [[lein-figwheel "0.5.8"]
             [lein-doo "0.1.7"]
             [devcards "0.2.2"]
-            [lein-cljsbuild "1.1.5" :exclusions [[org.clojure/clojure]]]]
-  :hooks [leiningen.cljsbuild]
-  :profiles {:test {:plugins [[lein-kibit "0.1.3"]]}}
-  :clean-targets [:target-path "out"]
+            [lein-cljsbuild "1.1.5" :exclusions [[org.clojure/clojure]]]
+            [lein-ancient "0.6.10"]]
+  ;:hooks [leiningen.cljsbuild]
+  :target-path "target/%s"
+  :doo {
+        :build "test"
+        :alias {:default [:phantom]}
+        :paths {:phantom "phantomjs --web-security=false"}}
+
+  :profiles {:kibit {:plugins [[lein-kibit "0.1.3"]]}}
+  :clean-targets ^{:protect false} [:target-path "resources/public/cljs" "out"]
   :cljsbuild {
-              :test-commands {"test" ["lein" "doo" "phantom" "test" "once"]}
               :builds {:dev {:source-paths ["src"]
                              :figwheel true
                              :compiler {:main "cloko.frontend"

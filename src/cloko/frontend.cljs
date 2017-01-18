@@ -4,24 +4,23 @@
 
 (.log js/console "Hello World?!")
 
-(def planet-icon [:a {:href ""}
-                  [:img {:src "assets/planets/europa.svg"}]])
+(def planet-icon [:img {:src "assets/planets/europa.svg"}])
 
 (defn field
   [planet]
   (if planet
-    [:td.planet planet-icon]
-    [:td.space]))
+    [:div.field.planet planet-icon]
+    [:div.field.space]))
 
 (defn row
   [x y-size planets]
-  (apply conj [:tr] (mapv #(field (get-in planets [[% x] :owner] nil)) (range y-size))))
+  (mapv #(field (get-in planets [[% x] :owner] nil)) (range y-size)))
 
 (defn board []
   (let [state @core/game-state
         [x-size y-size] (get-in state [:world :size])
         planets (get-in state [:world :planets])]
-    (apply conj [:table.board] (mapv #(row % y-size planets) (range x-size)))))
+    (vec (apply concat [:div.board] (mapv #(row % y-size planets) (range x-size))))))
 
 (defn movement-info []
   (let [state @core/game-state]))
