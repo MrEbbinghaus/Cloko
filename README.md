@@ -1,5 +1,7 @@
 # CloKo - Clojure Konquest! #
 
+[![Build Status](https://travis-ci.com/MrOerni/Cloko.svg?token=Rnk3s5asaiAz4eG6YMXs&branch=master)](https://travis-ci.com/MrOerni/Cloko)
+
 This README would normally document whatever steps are necessary to get your application up and running. But I'm lazy.
 
 ### What is this repository for? ###
