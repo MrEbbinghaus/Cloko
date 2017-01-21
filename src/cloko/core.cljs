@@ -52,6 +52,16 @@
   [[x y]]
   (vec (repeat y (vec (repeat x :.)))))
 
+(defn player-owns-planet?
+  "Returns true if player owns the planet at position position."
+  [player planet]
+  (= player (:owner planet)))
+
+(defn players-planets
+  "Returns a string with informations about "
+  [player planets]
+  (filter #(player-owns-planet? player %2) planets))
+
 (defn show-board!
   "Prints the current world. Dots represent empty fields.
   Numbers represent planets of the corresonding player. 'N' belongs to the neutral player"
@@ -83,11 +93,6 @@
     (->> (pythagoras (Math/abs (- x1 x2)) (Math/abs (- y1 y2)))
          (* *distance-factor*)
          (Math/ceil))))
-
-(defn player-owns-planet?
-  "Returns true if player owns the planet at position position."
-  [player position planets]
-  (= player (get-in planets [position :owner])))
 
 (defn- add-movement
   "Returns a movements map with an entry of a new movement. Does not check if there are enugh ships!"
@@ -121,7 +126,7 @@
           origin-planet (get planets from)
           current-player (whose-turn state)]
       (cond
-        (not (player-owns-planet? current-player from planets)) :not-players-planet
+        (not (player-owns-planet? current-player origin-planet)) :not-players-planet
         (not (enough-ships-on-planet? origin-planet amount)) :not-enough-ships
         :everything-fine (swap! game-state add-movement from to current-player amount (distance from to))))
     @game-state))
