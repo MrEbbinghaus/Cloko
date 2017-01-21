@@ -32,6 +32,8 @@ git config user.name "Travis CI"
 git config user.email "$COMMIT_AUTHOR_EMAIL"
 
 # If there are no changes to the compiled out (e.g. this is a README update) then just bail.
+
+git status
 if [ $(git status --porcelain | wc -l) -lt 1 ]; then
     echo "No changes to the output on this push; exiting."
     exit 0
@@ -39,9 +41,7 @@ fi
 
 # Commit the "changes", i.e. the new version.
 # The delta will show diffs between new and old versions.
-pwd
-git status
-git add .
+git add -A
 git commit -m "Deploy to GitHub Pages: ${SHA}"
 
 # Now that we're all set up, we can push.
