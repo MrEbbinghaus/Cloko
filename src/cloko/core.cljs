@@ -192,7 +192,13 @@
   "Calculates the remaining ships. A negativ number indicates a win of the attacker.
   This"
   ([a d] (- d a))
-  ([a d b] (fight a d)))
+  ([a d b] (let [db (* d b)
+                 absolute (+ db a)
+                 r (- db a)]
+             (cond
+               (zero? absolute) 0
+               (>= r 0) (* d (/ db absolute))
+               :else (- (* a (/ a absolute)))))))
 
 (defn- fight-vs-planet
   "Gets a planet and an enemy fleet and returns an updated planet"

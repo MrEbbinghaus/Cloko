@@ -113,11 +113,18 @@
          (testing "Fight propertys."
            (let [check (tc/quick-check 100 (prop/for-all [a gen/nat
                                                           d gen/nat
-                                                          b gen/double]
+                                                          b (gen/double* {:min 0 :NaN? false :infinite? false})]
                                                          (let [result (cloko.core/fight a d b)]
                                                            (and
+                                                             ; check that no ships are generated
                                                              (<= (- a) result d)
-                                                             (if (= b 0) ((if (< a d) >= <=) result 0) true)))))]
+                                                             ; checks for a fight without bonus
+                                                             (if (= b 1)
+                                                               (cond
+                                                                 (= a d) (zero? 0)
+                                                                 (< a d) (>= result 0)
+                                                                 (> a d) (<= result 0))
+                                                               true)))))]
              (is (= :true (get-in check [:shrunk :smallest] :true))))))
 
 (deftest end-round-test
