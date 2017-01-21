@@ -118,8 +118,7 @@
                                                            (and
                                                              (<= (- a) result d)
                                                              (if (= b 0) ((if (< a d) >= <=) result 0) true)))))]
-             (when-not (:result check) (print "fight-test smallest: " (get-in check [:shrunk :smallest])))
-             (is (:result check)))))
+             (is (= :true (get-in check [:shrunk :smallest] :true))))))
 
 (deftest end-round-test
          (testing "Basic test TODO This is a win situation!"
