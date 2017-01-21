@@ -244,7 +244,7 @@
 
 (defn- load [transit]
   (let [r (transit/reader :json)]
-    (transit/read r)))
+    (transit/read r transit)))
 
 (defn save! []
   (save @game-state))
