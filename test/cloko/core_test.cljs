@@ -12,6 +12,32 @@
     (is (< 0
            (cloko.core/distance [0 0] [1 0])))))
 
+(deftest players-planets-test
+  (testing "Return all planets of a player."
+    (is (= (cloko.core/players-planets :player1 {
+                                                 [1, 1]
+                                                 {:owner          :player1
+                                                  :ships-per-turn 4
+                                                  :ships          10}
+                                                 [7, 7]
+                                                 {:owner          :player2
+                                                  :ships-per-turn 4
+                                                  :ships          10}
+                                                 [4, 4]
+                                                 {:owner :player1
+                                                  :ships-per-turn 2
+                                                  :ships 100}})
+          {[1, 1]
+           {:owner          :player1
+            :ships-per-turn 4
+            :ships          10}
+           [4, 4]
+           {:owner :player1
+            :ships-per-turn 2
+            :ships 100}}))))
+
+
+
 (deftest how-many-ships-test
          (testing "Basic functionality"
            (is (= 42
@@ -92,7 +118,7 @@
                                                            (and
                                                              (<= (- a) result d)
                                                              (if (= b 0) ((if (< a d) >= <=) result 0) true)))))]
-             (print "fight-test smallest: " (get-in check [:shrunk :smallest]))
+             (when-not (:result check) (print "fight-test smallest: " (get-in check [:shrunk :smallest])))
              (is (:result check)))))
 
 (deftest end-round-test

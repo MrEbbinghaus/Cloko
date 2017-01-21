@@ -52,29 +52,39 @@
   [[x y]]
   (vec (repeat y (vec (repeat x :.)))))
 
-(defn player-owns-planet?
+(defn- player-owns-planet?
   "Returns true if player owns the planet at position position."
   [player planet]
   (= player (:owner planet)))
 
 (defn players-planets
-  "Returns a string with informations about "
+  "Returns a map of only the planets which belong to player "
   [player planets]
-  (filter #(player-owns-planet? player %2) planets))
+  (->> (filter (fn [[_ planet]] (player-owns-planet? player planet)) planets)
+       (apply concat)
+       (apply hash-map)))
 
 (defn show-board!
   "Prints the current world. Dots represent empty fields.
   Numbers represent planets of the corresonding player. 'N' belongs to the neutral player"
   []
-  (let [world (:world @game-state)
-        planets (:planets world)
-        dims (:size world)]
-    (->> planets
-         (place-planets (world-as-dots dims))
-         (interpose "\n")
-         (flatten)
-         (replace *print-symbols*)
-         (print))))
+  (let [state @game-state
+        planets (get-in state [:world :planets])
+        dims (get-in state [:world :size])
+        keys-to-print [:position :ships :ships-per-turn]]
+    ; Print world grid
+    (print (with-out-str (->> planets
+                           (place-planets (world-as-dots dims))
+                           (interpose "\n")
+                           (flatten)
+                           (replace *print-symbols*)
+                           (println))
+                         ; Print current players planets
+                         (->> planets
+                              (players-planets (whose-turn state))
+                              (map (fn [[pos planet]] (assoc planet :position pos)))
+                              (sort-by :position)
+                              (pprint/print-table keys-to-print))))))
 
 (defn players-turn?
   "Returns true if it is players turn."
