@@ -1,6 +1,7 @@
 (ns cloko.core
   (:require [cljs.pprint :as pprint]
-            [reagent.core :as reagent]))
+            [reagent.core :as reagent]
+            [cognitect.transit :as transit]))
 
 (def *distance-factor* 0.5)
 (def *defence-bonus* 1.1)
@@ -236,3 +237,17 @@
   (swap! game-state #(if (>= (inc (:whosTurn %)) (count (:players %)))
                        (assoc-in (end-round %) [:whosTurn] 0)
                        (update-in % [:whosTurn] inc))))
+
+(defn- save [o]
+  (let [w (transit/writer :json)]
+    (transit/write w o)))
+
+(defn- load [transit]
+  (let [r (transit/reader :json)]
+    (transit/read r)))
+
+(defn save! []
+  (save @game-state))
+
+(defn load! [input]
+  (reset! game-state (load input)))

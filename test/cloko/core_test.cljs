@@ -207,4 +207,8 @@
                                                           :ships 5
                                                           :ships-per-turn 5}})))))
 
-
+;(deftest load-safe-test
+;         (testing "safe -> load stays the same"
+;           (let [check (tc/quick-check 100 (prop/for-all [input gen/any-printable]
+;                                                         (= input (cloko.core/load (cloko.core/save input)))}))
+;             (is (= :true (get-in check [:shrunk :smallest] :true))))))
