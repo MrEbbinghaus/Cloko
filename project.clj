@@ -23,7 +23,8 @@
         :paths {:phantom "phantomjs --web-security=false"}}
 
   :aliases {"test" ["doo" "once"]
-            "compile" ["cljsbuild" "once" "min"]}
+            "compile" ["cljsbuild" "once" "min"]
+            "kibit" ["with-profile" "kibit" "kibit"]}
 
   :profiles {:kibit {:plugins [[lein-kibit "0.1.3"]]}}
 
