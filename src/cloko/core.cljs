@@ -139,9 +139,9 @@
 
 (defn- add-movement
   "Returns a movements map with an entry of a new movement. Does not check if there are enugh ships!"
-  [old-state from to player amount turns]
-  (let [planet (get-in old-state [:world :planets from])]
-    (-> old-state
+  [state from to player amount turns]
+  (let [planet (get-in state [:world :planets from])]
+    (-> state
         (update-in [:ships] - amount)
         (update-in [:movements] conj {:origin from
                                       :target to
@@ -159,20 +159,25 @@
 
 (defn- enough-ships-on-planet?
   [planet amount]
-  (> (:ships planet) amount))
+  (>= (:ships planet) amount))
+
+(defn- print-failure [msg state]
+  (print msg)
+  state)
 
 (defn send!
-  [from to amount]
-  (if (= from to)
-    (let [state @game-state
-          planets (get-in state [:world :planets])
-          origin-planet (get planets from)
-          current-player (whose-turn state)]
-      (cond
-        (not (player-owns-planet? current-player origin-planet)) :not-players-planet
-        (not (enough-ships-on-planet? origin-planet amount)) :not-enough-ships
-        :everything-fine (swap! game-state add-movement from to current-player amount (distance from to))))
-    @game-state))
+  ([from to amount]
+   (swap! game-state #(send! from to amount %)))
+  ([from to amount state]
+   (if (not= from to)
+     (let [planets (get-in state [:world :planets])
+           origin-planet (get planets from)
+           current-player (whose-turn state)]
+       (cond
+         (not (player-owns-planet? current-player origin-planet)) (print-failure "You don't own the planet!" state)
+         (not (enough-ships-on-planet? origin-planet amount)) (print-failure "You don't have enough ships" state)
+         :everything-fine (add-movement state from to current-player amount (distance from to))))
+     (print-failure "from = to!" state))))
 
 (defn movements! []
   (let [state @game-state
