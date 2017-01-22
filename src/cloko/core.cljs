@@ -1,7 +1,9 @@
 (ns cloko.core
   (:require [cljs.pprint :as pprint]
             [reagent.core :as reagent]
-            [cognitect.transit :as transit]))
+            [cognitect.transit :as transit]
+            [clojure.math.combinatorics :as combo]))
+
 
 (def *distance-factor* 0.5)
 (def *defence-bonus* 1.1)
@@ -38,7 +40,37 @@
 
 (def game-state (reagent/atom initial-game-state))
 
-(defn init! [] (reset! game-state initial-game-state))
+(defn random-positions [x y]
+  (map vec (shuffle (combo/cartesian-product (range x) (range y)))))
+
+(defn gen-planet
+  ([owner spt] (gen-planet owner spt 0))
+  ([owner spt ships] {:owner owner :ships-per-turn spt :ships 0}))
+
+(defn gen-game-state [size planets players]
+  {:world     {
+               :size    size,
+               :planets planets}
+
+
+   :movements []
+   :whosTurn 0
+   :round 0
+   :players players})
+
+
+(defn init!
+  ([] (reset! game-state initial-game-state))
+  ([x y n player]
+   (let [positions (random-positions x y)
+         players (vec (map #(keyword (str "player" (inc %))) (range player)))
+         player-planets (apply merge (for [p (range player)]
+                                       {(nth positions p) (gen-planet (keyword (str "player" (inc p))) (+ 4 (rand-int 3)))}))
+         neutral-planets (apply merge (for [neutral (range n)]
+                                        {(nth (drop player positions) neutral) (gen-planet :neutral (+ 2 (rand-int 6)) (+ 5 (rand-int 35)))}))
+         planets (merge player-planets neutral-planets)]
+     (reset! game-state (gen-game-state [x y] planets players)))))
+
 
 (defn whose-turn
   ([] (whose-turn @game-state))
