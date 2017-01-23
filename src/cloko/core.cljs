@@ -107,11 +107,11 @@
         keys-to-print [:position :ships :ships-per-turn]]
     ; Print world grid
     (print (with-out-str (->> planets
-                           (place-planets (world-as-dots dims))
-                           (interpose "\n")
-                           (flatten)
-                           (replace *print-symbols*)
-                           (println))
+                              (place-planets (world-as-dots dims))
+                              (interpose "\n")
+                              (flatten)
+                              (replace *print-symbols*)
+                              (println))
                          ; Print current players planets
                          (->> planets
                               (players-planets (whose-turn state))
@@ -142,7 +142,7 @@
   [state from to player amount turns]
   (let [planet (get-in state [:world :planets from])]
     (-> state
-        (update-in [:ships] - amount)
+        (update-in [:world :planets from :ships] - amount)
         (update-in [:movements] conj {:origin from
                                       :target to
                                       :owner player
@@ -174,6 +174,7 @@
            origin-planet (get planets from)
            current-player (whose-turn state)]
        (cond
+         (not (get planets to)) (print-failure "No planet to send to!" state)
          (not (player-owns-planet? current-player origin-planet)) (print-failure "You don't own the planet!" state)
          (not (enough-ships-on-planet? origin-planet amount)) (print-failure "You don't have enough ships" state)
          :everything-fine (add-movement state from to current-player amount (distance from to))))
