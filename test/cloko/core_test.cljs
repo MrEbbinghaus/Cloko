@@ -143,7 +143,7 @@
                   :movements []
                   :whosTurn 0
                   :round 1
-                  :players [:player1 :player2]}
+                  :players [:player1]}
                  (cloko.core/end-round {:world     {
                                                     :planets {
                                                               [1, 1]
@@ -206,6 +206,16 @@
                                                   [7, 7] {:owner :player2
                                                           :ships 5
                                                           :ships-per-turn 5}})))))
+
+(deftest get-remaining-players-test
+         (testing "Basic"
+           (is (= [:player1 :player2]
+                  (cloko.core/get-all-players-with-stuff
+                    {:movements [{:owner :player1}
+                                 {:owner :player2}
+                                 {:owner :player1}]
+                     :world {:planets {[0 0] {:owner :player1}
+                                       [1 1] {:owner :player1}}}})))))
 
 ;(deftest load-safe-test
 ;         (testing "safe -> load stays the same"

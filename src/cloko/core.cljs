@@ -261,6 +261,15 @@
   [planets arrived-fleets]
   (map-vals #(fight-for-planet %2 (get arrived-fleets %1 [])) planets))
 
+(defn- get-all-players-with-stuff
+  [state]
+  (vec (set (concat
+                (map :owner (:movements state))
+                (map (fn [[_ v]] (:owner v)) (get-in state [:world :planets]))))))
+
+(defn- print-victory-message [player]
+  (print (name player) " wins!\nYou may end the game now."))
+
 (defn- end-round
   [game-state]
   (-> game-state
@@ -268,7 +277,9 @@
       (update-in [:movements] update-movements)
       (#(update-in % [:world :planets] fight-for-planets (arrived-fleets (:movements %))))
       (update-in [:movements] clear-movements)
-      (update-in [:round] inc)))
+      (update-in [:round] inc)
+      (#(assoc-in % [:players] (get-all-players-with-stuff %)))
+      (#(when (= 1 (count (:players %))) (print-victory-message (first (:players %))) %))))
 
 (defn end-turn!
   []

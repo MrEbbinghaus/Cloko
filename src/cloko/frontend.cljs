@@ -24,11 +24,14 @@
         planets (get-in state [:world :planets])]
     (vec (apply concat [:div.board] (mapv #(row % y-size planets) (range x-size))))))
 
+
+
 (defn app []
   (let [state @core/game-state]
     [:div
      [:div (whose-turn state)]
      (board state)
+     (planet-info-component {:owner :player1})
      [:div next-turn-btn]]))
 
 (defn ^:export main []  ;; do not forget the export
