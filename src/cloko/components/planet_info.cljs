@@ -6,10 +6,12 @@
   [state]
   (let [selected-planet (get-in state [:fe :selected-planet])
         planet (get-in state [:world :planets selected-planet])]
-    [:div.planet-info (if planet
-                        [:ul.list-group
-                         [:li.list-group-item "Position: " (first selected-planet) ":" (second selected-planet)]
-                         [:li.list-group-item "Owner: " (:owner planet)]
-                         [:li.list-group-item "Ships per turn: " (:ships-per-turn planet)]
-                         [:li.list-group-item "Stationed ships: " (:ships planet)]]
-                        [:p "No planet selected!"])]))
+    [:div.panel.panel-default
+     [:div.panel-heading "Planet information"]
+     [:div.planet-info.panel-body (if planet
+                                    [:table.table
+                                     [:tr [:td "Position"] [:td (first selected-planet) ":" (second selected-planet)]]
+                                     [:tr [:td "Owner"] [:td (:owner planet)]]
+                                     [:tr [:td "Ships per turn"] [:td (:ships-per-turn planet)]]
+                                     [:tr [:td "Stationed ships"] [:td (:ships planet)]]]
+                                    [:p "No planet selected!"])]]))
