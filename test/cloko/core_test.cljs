@@ -210,7 +210,7 @@
 (deftest get-remaining-players-test
          (testing "Basic"
            (is (= [:player1 :player2]
-                  (cloko.core/get-all-players-with-stuff
+                  (cloko.core/get-remaining-players
                     {:movements [{:owner :player1}
                                  {:owner :player2}
                                  {:owner :player1}]

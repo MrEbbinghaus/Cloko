@@ -261,31 +261,54 @@
   [planets arrived-fleets]
   (map-vals #(fight-for-planet %2 (get arrived-fleets %1 [])) planets))
 
-(defn- get-all-players-with-stuff
+(defn- get-remaining-players
   [state]
-  (vec (set (concat
-                (map :owner (:movements state))
-                (map (fn [[_ v]] (:owner v)) (get-in state [:world :planets]))))))
+  (-> state
+    (#(concat
+        (map :owner (:movements %))
+        (map (fn [[_ v]] (:owner v)) (get-in % [:world :planets]))))
+    (set)
+    (disj :neutral)
+    (vec)))
+
 
 (defn- print-victory-message [player]
-  (print (name player) " wins!\nYou may end the game now."))
+  (println (name player) " wins!\nYou may end the game now."))
+
+(defn- victory?
+  [state]
+  (= 1 (count (:players state))))
+
+(defn- set-remaining-players
+  [state]
+  (assoc-in state [:players] (get-remaining-players state)))
 
 (defn- end-round
   [game-state]
   (-> game-state
+      (assoc-in [:whosTurn] 0)
       (update-in [:world :planets] generate-all-ships)
       (update-in [:movements] update-movements)
       (#(update-in % [:world :planets] fight-for-planets (arrived-fleets (:movements %))))
       (update-in [:movements] clear-movements)
       (update-in [:round] inc)
-      (#(assoc-in % [:players] (get-all-players-with-stuff %)))
-      (#(when (= 1 (count (:players %))) (print-victory-message (first (:players %))) %))))
+      (set-remaining-players)
+      (#(do
+          (when (victory? %) (print-victory-message (first (:players %))))
+          %))))
 
-(defn end-turn!
-  []
-  (swap! game-state #(if (>= (inc (:whosTurn %)) (count (:players %)))
-                       (assoc-in (end-round %) [:whosTurn] 0)
-                       (update-in % [:whosTurn] inc))))
+(defn- cycle-complete?
+  [whose-turn players]
+  (>= (inc whose-turn) (count players)))
+
+(defn- end-turn
+  ; Complected!
+  [state]
+  (if (cycle-complete? (:whosTurn state) (:players state))
+    (end-round state)
+    (update-in state [:whosTurn] inc)))
+
+(defn end-turn! [] (swap! game-state end-turn))
 
 (defn- save [o]
   (let [w (transit/writer :json)]
