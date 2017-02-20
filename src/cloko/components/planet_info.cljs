@@ -2,7 +2,7 @@
   (:require [reagent.core :as r]
             [cloko.core :as core]))
 
-(defn planet-info-component
+(defn planet-info
   [state]
   (let [selected-planet (get-in state [:fe :selected-planet])
         planet (get-in state [:world :planets selected-planet])]

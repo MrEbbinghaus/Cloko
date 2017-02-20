@@ -35,7 +35,7 @@
     [:div
      [:div (whose-turn state)]
      (board state)
-     (planet-info/planet-info-component state)
+     (planet-info/planet-info state)
      [:div next-turn-btn]]))
 
 (defn ^:export main []  ;; do not forget the export
