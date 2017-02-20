@@ -141,9 +141,9 @@
                                          :ships-per-turn 4
                                          :ships          6}}}
                   :movements []
-                  :whosTurn 0
-                  :round 1
-                  :players [:player1]}
+                  :whoseTurn 0
+                  :round     1
+                  :players   [:player1]}
                  (cloko.core/end-round {:world     {
                                                     :planets {
                                                               [1, 1]
@@ -160,9 +160,9 @@
                                                      :owner :player1
                                                      :ships 20
                                                      :rounds-until-arrival 1}]
-                                        :whosTurn 0
-                                        :round 0
-                                        :players [:player1 :player2]})))))
+                                        :whoseTurn 0
+                                        :round     0
+                                        :players   [:player1 :player2]})))))
 
 (deftest arrived-fleets-test
          (testing ""

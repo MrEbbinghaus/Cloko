@@ -34,9 +34,9 @@
                                       :ships 10
                                       :rounds-until-arrival 3}]
 
-                         :whosTurn 0
-                         :round 0
-                         :players [:player1 :player2]})
+                         :whoseTurn 0
+                         :round     0
+                         :players   [:player1 :player2]})
 
 (def game-state (reagent/atom initial-game-state))
 
@@ -54,9 +54,9 @@
 
 
    :movements []
-   :whosTurn 0
-   :round 0
-   :players players})
+   :whoseTurn 0
+   :round     0
+   :players   players})
 
 
 (defn init!
@@ -74,7 +74,7 @@
 
 (defn whose-turn
   ([] (whose-turn @game-state))
-  ([state] (get-in state [:players (:whosTurn state)])))
+  ([state] (get-in state [:players (:whoseTurn state)])))
 
 
 (defn- place-planets [world planets]
@@ -286,7 +286,7 @@
 (defn- end-round
   [game-state]
   (-> game-state
-      (assoc-in [:whosTurn] 0)
+      (assoc-in [:whoseTurn] 0)
       (update-in [:world :planets] generate-all-ships)
       (update-in [:movements] update-movements)
       (#(update-in % [:world :planets] fight-for-planets (arrived-fleets (:movements %))))
@@ -304,9 +304,9 @@
 (defn- end-turn
   ; Complected!
   [state]
-  (if (cycle-complete? (:whosTurn state) (:players state))
+  (if (cycle-complete? (:whoseTurn state) (:players state))
     (end-round state)
-    (update-in state [:whosTurn] inc)))
+    (update-in state [:whoseTurn] inc)))
 
 (defn end-turn! [] (swap! game-state end-turn))
 

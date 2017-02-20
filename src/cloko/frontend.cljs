@@ -7,7 +7,7 @@
 (def nplanet-icon [:img {:src "assets/planets/mars.svg"}])
 (def next-turn-btn [:button.btn {:on-click core/end-turn!} "Next turn"])
 
-(defn whose-turn [state] [:span.badge (name (get (:players state) (:whosTurn state)))])
+(defn whose-turn [state] [:span.badge (name (get (:players state) (:whoseTurn state)))])
 
 (defn set-selected-position!
   [pos]
