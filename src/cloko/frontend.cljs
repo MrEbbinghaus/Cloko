@@ -7,7 +7,7 @@
 (def nplanet-icon [:img {:src "assets/planets/mars.svg"}])
 (def next-turn-btn [:button.btn {:on-click core/end-turn!} "Next turn"])
 
-(defn whose-turn [state] [:span.badge (name (get (:players state) (:whoseTurn state)))])
+(defn whose-turn [state] [:label.success (name (get (:players state) (:whoseTurn state)))])
 
 (defn set-selected-position!
   [pos]
@@ -35,7 +35,9 @@
     [:div
      [:div (whose-turn state)]
      (board state)
-     (planet-info/planet-info state)
+     [:div.row
+      [:div.col-md6 (planet-info/planet-info-panel state)]
+      [:div.col-md6]]
      [:div next-turn-btn]]))
 
 (defn ^:export main []  ;; do not forget the export

@@ -187,8 +187,9 @@
     (pprint/print-table cols-to-print (filter #(= (whose-turn state) (:owner %)) movements))))
 
 (defn player-movements [state]
-  (let [movements (:movements state)]
-    (filter #(= (whose-turn state) (:owner %)) movements)))
+  (let [movements (:movements state)
+        whose (whose-turn state)]
+    (filter #(= whose (:owner %)) movements)))
 
 (defn- map-vals
   "Applys an f to every value of a map. Returns a new map with same keys."
