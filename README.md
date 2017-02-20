@@ -5,7 +5,7 @@
 ### What is this repository for? ###
 * A Konquest clone written in ClojureScript!
 * It is a project work for the course _functional programming_ from the Heinrich-Heine-University in the winter term 2016/17
-* Version: `0.1.0`
+* Version: `0.1.1`
 
 ### How do I set up? ###
 * Make sure you installed leinigen.
