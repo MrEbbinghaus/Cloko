@@ -83,5 +83,6 @@ fabric.properties
 .sass-cache
 *.css
 *.css.map
+!debug.css
 /node_modules/
 cloko_deploy_key
