@@ -2,14 +2,14 @@
   :license {:name "MIT License"
             :url "http://opensource.org/licenses/MIT"}
   :dependencies [[org.clojure/clojure "1.8.0"]
-                 [org.clojure/clojurescript "1.9.293"]
+                 [org.clojure/clojurescript "1.9.473"]
                  [org.clojure/test.check "0.9.0"]
                  [devcards "0.2.2"]
                  [lein-doo "0.1.7"]
                  [reagent "0.6.0"]
                  [com.cognitect/transit-cljs "0.8.239"]
                  [org.clojure/math.combinatorics "0.1.4"]]
-  :plugins [[lein-figwheel "0.5.8"]
+  :plugins [[lein-figwheel "0.5.9"]
             [lein-doo "0.1.7"]
             [devcards "0.2.2"]
             [lein-cljsbuild "1.1.5" :exclusions [[org.clojure/clojure]]]
