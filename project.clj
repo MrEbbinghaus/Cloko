@@ -1,4 +1,4 @@
-(defproject cloko "0.2.0"
+(defproject cloko "0.2.1"
   :license {:name "MIT License"
             :url "http://opensource.org/licenses/MIT"}
   :dependencies [[org.clojure/clojure "1.8.0"]
