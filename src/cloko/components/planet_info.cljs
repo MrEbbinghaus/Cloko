@@ -4,10 +4,11 @@
 
 (defn planet-details [planet [x y]]
   [:table.table
-   [:tr [:td "Position"] [:td x ":" y]]
-   [:tr [:td "Owner"] [:td (:owner planet)]]
-   [:tr [:td "Ships per turn"] [:td (:ships-per-turn planet)]]
-   [:tr [:td "Stationed ships"] [:td (:ships planet)]]])
+   [:tbody
+    [:tr [:td "Position"] [:td x ":" y]]
+    [:tr [:td "Owner"] [:td (:owner planet)]]
+    [:tr [:td "Ships per turn"] [:td (:ships-per-turn planet)]]
+    [:tr [:td "Stationed ships"] [:td (:ships planet)]]]])
 
 (defn planet-info-panel
   [state]
