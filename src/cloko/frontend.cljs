@@ -1,13 +1,14 @@
 (ns cloko.frontend
   (:require [cloko.core :as core]
             [reagent.core :as r]
-            [cloko.components.planet-info :as planet-info]))
+            [cloko.components.planet-info :as planet-info]
+            [cloko.components.movement-info :as movement-info]))
 
 (def planet-icon [:img {:src "assets/planets/europa.svg"}])
 (def nplanet-icon [:img {:src "assets/planets/mars.svg"}])
 (def next-turn-btn [:div.col-xs-1 [:button.btn {:on-click core/end-turn!} "Next turn"]])
 
-(defn whose-turn [state] [:div.col-xs-1[:label.label.label-info.full-width (name (get (:players state) (:whoseTurn state)))]])
+(defn whose-turn [state] [:div.col-xs-1 [:label.label.label-info.full-width (name (get (:players state) (:whoseTurn state)))]])
 
 (defn set-selected-position!
   [pos]
@@ -34,10 +35,10 @@
   (let [state @core/game-state]
     [:div.panel-body
      [:div.row (whose-turn state)]
-     [:div.row [:div.col-md-12 (board state)]]
+     [:div.row [:div.col-md-12.center (board state)]]
      [:div.row
       [:div.col-sm-6 (planet-info/planet-info-panel state)]
-      [:div.col-sm-6 "bla"]]
+      [:div.col-sm-6 (movement-info/movement-info-panel state)]]
      [:div.row next-turn-btn]]))
 
 (defn ^:export main []  ;; do not forget the export
