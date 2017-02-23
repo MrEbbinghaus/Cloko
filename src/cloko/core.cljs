@@ -137,6 +137,14 @@
          (* *distance-factor*)
          (Math/ceil))))
 
+(defn- player-movements
+  ([state]
+   (let [movements (:movements state)
+         current-player (whose-turn state)]
+     (player-movements current-player movements)))
+  ([player movements]
+   (filter #(= player (:owner %)) movements)))
+
 (defn- add-movement
   "Returns a movements map with an entry of a new movement. Does not check if there are enugh ships!"
   [state from to player amount turns]
@@ -182,14 +190,10 @@
 
 (defn movements! []
   (let [state @game-state
+        current-player (whose-turn state)
         movements (:movements state)
         cols-to-print [:origin :target :ships :rounds-until-arrival]]
-    (pprint/print-table cols-to-print (filter #(= (whose-turn state) (:owner %)) movements))))
-
-(defn player-movements [state]
-  (let [movements (:movements state)
-        whose (whose-turn state)]
-    (filter #(= whose (:owner %)) movements)))
+    (pprint/print-table cols-to-print (player-movements current-player movements))))
 
 (defn- map-vals
   "Applys an f to every value of a map. Returns a new map with same keys."
