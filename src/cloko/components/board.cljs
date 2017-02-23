@@ -1,7 +1,6 @@
 (ns cloko.components.board
   (:require
-    [cloko.core :as core]
-    [cloko.frontend :as fe]))
+    [cloko.core :as core]))
 
 (def planet-icon [:img {:src "assets/planets/europa.svg"}])
 (def nplanet-icon [:img {:src "assets/planets/mars.svg"}])

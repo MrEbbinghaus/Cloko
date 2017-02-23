@@ -6,7 +6,7 @@
             [cloko.components.board :as board]))
 
 
-(def next-turn-btn [:div.col-xs-1 [:button.btn {:on-click core/end-turn!} "Next turn"]])
+(def next-turn-btn [:div.col-xs-1 [:button.btn.btn-success {:on-click core/end-turn!} "Next turn"]])
 
 (defn whose-turn [state] [:div.col-xs-1 [:label.label.label-info.full-width (name (get (:players state) (:whoseTurn state)))]])
 
