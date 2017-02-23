@@ -2,40 +2,19 @@
   (:require [cloko.core :as core]
             [reagent.core :as r]
             [cloko.components.planet-info :as planet-info]
-            [cloko.components.movement-info :as movement-info]))
+            [cloko.components.movement-info :as movement-info]
+            [cloko.components.board :as board]))
 
-(def planet-icon [:img {:src "assets/planets/europa.svg"}])
-(def nplanet-icon [:img {:src "assets/planets/mars.svg"}])
+
 (def next-turn-btn [:div.col-xs-1 [:button.btn {:on-click core/end-turn!} "Next turn"]])
 
 (defn whose-turn [state] [:div.col-xs-1 [:label.label.label-info.full-width (name (get (:players state) (:whoseTurn state)))]])
-
-(defn set-selected-position!
-  [pos]
-  (swap! core/game-state assoc-in [:fe :selected-planet] pos))
-
-(defn field
-  [planet [x y]]
-  (if planet
-    [:div.field.planet
-     {:data-x x :data-y y :on-click #(set-selected-position! [x y])}
-     (if (= :neutral (:owner planet)) nplanet-icon planet-icon)]
-    [:div.field.space]))
-
-(defn row
-  [x y-size planets]
-  (mapv #(field (get-in planets [[% x]] nil) [% x]) (range y-size)))
-
-(defn board [state]
-  (let [[x-size y-size] (get-in state [:world :size])
-        planets (get-in state [:world :planets])]
-    (vec (apply concat [:div.board] (mapv #(row % y-size planets) (range x-size))))))
 
 (defn app []
   (let [state @core/game-state]
     [:div.panel-body
      [:div.row (whose-turn state)]
-     [:div.row [:div.col-md-12.center (board state)]]
+     [:div.row [:div.col-md-12.center (board/board state)]]
      [:div.row
       [:div.col-sm-6 (planet-info/planet-info-panel state)]
       [:div.col-sm-6 (movement-info/movement-info-panel state)]]
