@@ -1,7 +1,7 @@
 (ns cloko.frontend
   (:require [cloko.core :as core]
             [reagent.core :as r]
-            [cloko.components.planet-info :as planet-info]
+            [cloko.components.planet-info :refer [planet-info-panel]]
             [cloko.components.movement-info :refer [movement-info-panel]]
             [cloko.components.board :as board]
             [cloko.components.send :as send]))
@@ -23,7 +23,7 @@
      [:div.row (whose-turn state)]
      [:div.row [:div.col-md-12.center (board/board state)]]
      [:div.row
-      [:div.col-sm-6 (planet-info/planet-info-panel state)]
+      [:div.col-sm-6 [planet-info-panel]]
       [:div.col-sm-6 [movement-info-panel]]]
      [:div.row (if (and
                        (= (core/whose-turn state) (:owner selected-planet))
