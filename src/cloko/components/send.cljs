@@ -1,6 +1,7 @@
 (ns cloko.components.send
   (:require [reagent.core :as r]
-            [cloko.core :as core]))
+            [cloko.core :as core]
+            [cljs.reader :refer [read-string]]))
 
 (defonce data (r/atom {:ships 0}))
 
@@ -20,12 +21,12 @@
                    :max max
                    :step step
                    :value (:ships @data)
-                   :on-change #(swap! data assoc-in [:ships] (-> % .-target .-value cljs.reader/read-string))}]
+                   :on-change #(swap! data assoc-in [:ships] (-> % .-target .-value read-string))}]
      [:p (:ships @data)]]))
 
 (defn select-component [positions]
   (fn []
-    [:select.form-control {:on-change #(swap! data assoc-in [:target] (-> % .-target .-value cljs.reader/read-string))}
+    [:select.form-control {:on-change #(swap! data assoc-in [:target] (-> % .-target .-value read-string))}
      (for [p positions]
        ^{:key p} [:option {:value (str p)} (str p)])]))
 
