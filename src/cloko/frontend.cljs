@@ -3,7 +3,7 @@
             [reagent.core :as r]
             [cloko.components.planet-info :refer [planet-info-panel]]
             [cloko.components.movement-info :refer [movement-info-panel]]
-            [cloko.components.board :as board]
+            [cloko.components.board :refer [board]]
             [cloko.components.send :as send]))
 
 (defonce fe-state (r/atom {}))
@@ -21,7 +21,7 @@
         selected-planet (get-in state [:world :planets (get-in state [:fe :selected-planet])])]
     [:div.panel-body
      [:div.row (whose-turn state)]
-     [:div.row [:div.col-md-12.center (board/board state)]]
+     [:div.row [:div.col-md-12.center [board]]]
      [:div.row
       [:div.col-sm-6 [planet-info-panel]]
       [:div.col-sm-6 [movement-info-panel]]]
