@@ -26,7 +26,7 @@
       [:div.col-sm-6 (planet-info/planet-info-panel state)]
       [:div.col-sm-6 (movement-info/movement-info-panel state)]]
      [:div.row (if (and
-                       ;(= (core/whose-turn state) (:owner selected-planet))
+                       (= (core/whose-turn state) (:owner selected-planet))
                        (pos? (get-in state [:world :planets (get-in state [:fe :selected-planet]) :ships])))
                  [:div.col-xs-12 [send/send-panel state]]
                  (.log js/console))]
