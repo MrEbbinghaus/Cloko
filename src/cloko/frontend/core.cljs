@@ -6,7 +6,8 @@
             [cloko.frontend.components.movement-info :refer [movement-info-panel]]
             [cloko.frontend.components.board :refer [board]]
             [cloko.frontend.components.send :refer [send-panel]]
-            [cloko.frontend.components.save-load :refer [save-component load-component]]))
+            [cloko.frontend.components.save-load :refer [save-component load-component]]
+            [cloko.frontend.components.init :refer [init-component]]))
 
 (def next-turn-btn [:div.col-xs-1 [:button.btn.btn-danger
                                    {:on-click #((reset! fe-state {}) (core/end-turn!))}
@@ -37,8 +38,10 @@
           [:a {:data-toggle "collapse" :href "#collapse1"} "Fold out"]]
          [:div#collapse1.panel-collapse.collapse
           [:div.panel-body
-           [:div.col-sm-6 [save-component]]
-           [:div.col-sm-6 [load-component]]]]]]]]]))
+           [:div.row
+            [:div.col-sm-4 [save-component]]
+            [:div.col-sm-4 [load-component]]
+            [:div.col-sm-4 [init-component]]]]]]]]]]))
 
 (defn ^:export main []  ;; do not forget the export
   (core/init! 9 9 3 2)
