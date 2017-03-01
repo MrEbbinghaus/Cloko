@@ -12,8 +12,7 @@
   :plugins [[lein-figwheel "0.5.9"]
             [lein-doo "0.1.7"]
             [devcards "0.2.2"]
-            [lein-cljsbuild "1.1.5" :exclusions [[org.clojure/clojure]]]
-            [lein-ancient "0.6.10"]]
+            [lein-cljsbuild "1.1.5" :exclusions [[org.clojure/clojure]] :hooks true]]
   :hooks [leiningen.cljsbuild]
   :figwheel {
              :css-dirs ["resources/public/css"]}
@@ -24,9 +23,11 @@
 
   :aliases {"test" ["doo" "once"]
             "compile" ["cljsbuild" "once" "min"]
-            "kibit" ["with-profile" "kibit" "kibit"]}
+            "kibit" ["with-profile" "kibit" "kibit"]
+            "ancient" ["with-profile" "ancient" "ancient"]}
 
-  :profiles {:kibit {:plugins [[lein-kibit "0.1.3"]]}}
+  :profiles {:kibit {:plugins [[lein-kibit "0.1.3"]]}
+             :ancient {:plugins [[lein-ancient "0.6.10"]]}}
 
   :clean-targets ^{:protect false} [:target-path "resources/public/cljs/"]
 
