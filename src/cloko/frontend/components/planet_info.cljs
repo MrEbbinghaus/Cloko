@@ -4,6 +4,8 @@
             [cloko.frontend.utils :refer [fe-state position-formater]]))
 
 (defn planet-details [planet [x y] current-player]
+  "Gets planet information, a vector of said planet and the current-player.
+  Returns a hiccup table with these informations structured."
   [:table.table
    [:tbody
     [:tr [:td "Position"] [:td (position-formater [x y])]]
@@ -13,6 +15,7 @@
       [:tr [:td "Stationed ships"] [:td (:ships planet)]])]])
 
 (defn planet-info-panel []
+  "Returns a react component which displayes information about the selected planet"
   (fn []
     (let [state @game-state
           planet-position (:selected-planet @fe-state)
