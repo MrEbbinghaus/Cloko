@@ -5,10 +5,12 @@
             [cljs.reader :refer [read-string]]))
 
 (defn trow [& elements]
+  "Returns a hiccup html <tr> with all elements as <td>"
   [:tr (for [e elements]
          ^{:key (rand)} [:td e])])
 
 (defn send-panel []
+  "Returns a react component which displays various parameters to send ships from the selected planet to a target planet."
   (fn []
     (let [state @game-state
           current-player (whose-turn state)
