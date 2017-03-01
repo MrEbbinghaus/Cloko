@@ -19,4 +19,4 @@
        [:div.panel-body
         [:div.input-group
          [:input.form-control {:type "text" :on-change #(reset! internal-state (-> % .-target .-value))}]
-         [:span.input-group-btn [:button.btn.btn-secondary {:on-click #(load! @internal-state)} "Load!"]]]]])))
+         [:span.input-group-btn [:button.btn..btn-primary {:on-click #(load! @internal-state)} "Load!"]]]]])))
