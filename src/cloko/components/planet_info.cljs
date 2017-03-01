@@ -1,6 +1,7 @@
 (ns cloko.components.planet-info
   (:require [reagent.core :as r]
-            [cloko.core :refer [game-state whose-turn]]))
+            [cloko.core :refer [game-state whose-turn]]
+            [cloko.frontend :refer [fe-state]]))
 
 (defn planet-details [planet [x y] current-player]
   [:table.table
@@ -14,7 +15,7 @@
 (defn planet-info-panel []
   (fn []
     (let [state @game-state
-          planet-position (get-in state [:fe :selected-planet])
+          planet-position (:selected-planet @fe-state)
           planet (get-in state [:world :planets planet-position])
           current-player (whose-turn state)]
       [:div.panel.panel-default

@@ -1,13 +1,15 @@
 (ns cloko.components.board
   (:require
-    [cloko.core :refer [game-state]]))
+    [cloko.core :refer [game-state]]
+    [cloko.frontend :refer [fe-state]]))
 
 (def planet-icon [:img {:src "assets/planets/europa.svg"}])
 (def nplanet-icon [:img {:src "assets/planets/mars.svg"}])
 
 (defn set-selected-position!
   [pos]
-  (swap! game-state assoc-in [:fe :selected-planet] pos))
+  (swap! game-state assoc-in [:fe :selected-planet] pos)
+  (swap! fe-state assoc :selected-planet pos))
 
 (defn field
   [planet [x y]]

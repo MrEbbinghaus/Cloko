@@ -7,8 +7,7 @@
             [cloko.components.send :refer [send-panel]]))
 
 (defonce fe-state (r/atom {}))
-(defn reset-fe! []
-  (swap! core/game-state assoc :fe {}))
+(defn reset-fe! [] (reset! fe-state {}))
 
 (def next-turn-btn [:div.col-xs-1 [:button.btn.btn-danger
                                    {:on-click #((reset-fe!) (core/end-turn!))}
@@ -25,11 +24,10 @@
      [:div.row
       [:div.col-sm-6 [planet-info-panel]]
       [:div.col-sm-6 [movement-info-panel]]]
-     [:div.row (if (and
+     [:div.row (when (and
                        (= (core/whose-turn state) (:owner selected-planet))
                        (pos? (get-in state [:world :planets (get-in state [:fe :selected-planet]) :ships])))
-                 [:div.col-xs-12 [send-panel]]
-                 (.log js/console))]
+                 [:div.col-xs-12 [send-panel]])]
      [:div.row next-turn-btn]]))
 
 (defn ^:export main []  ;; do not forget the export
