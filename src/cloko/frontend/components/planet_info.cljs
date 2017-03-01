@@ -1,12 +1,12 @@
-(ns cloko.components.planet-info
+(ns cloko.frontend.components.planet-info
   (:require [reagent.core :as r]
             [cloko.core :refer [game-state whose-turn]]
-            [cloko.frontend :refer [fe-state]]))
+            [cloko.frontend.utils :refer [fe-state position-formater]]))
 
 (defn planet-details [planet [x y] current-player]
   [:table.table
    [:tbody
-    [:tr [:td "Position"] [:td x ":" y]]
+    [:tr [:td "Position"] [:td (position-formater [x y])]]
     [:tr [:td "Owner"] [:td (:owner planet)]]
     [:tr [:td "Ships per turn"] [:td (:ships-per-turn planet)]]
     (when (= current-player (:owner planet))

@@ -1,6 +1,7 @@
-(ns cloko.components.send
+(ns cloko.frontend.components.send
   (:require [reagent.core :as r]
             [cloko.core :refer [game-state whose-turn distance send!]]
+            [cloko.frontend.utils :refer [fe-state position-formater]]
             [cljs.reader :refer [read-string]]))
 
 (defn trow [& elements]
@@ -11,7 +12,7 @@
   (fn []
     (let [state @game-state
           current-player (whose-turn state)
-          planet-position (get-in state [:fe :selected-planet])
+          planet-position (:selected-planet @fe-state)
           planet (get-in state [:world :planets planet-position])
           other-planet-positions (remove #(= % planet-position) (keys (get-in state [:world :planets])))
           internal-state (r/atom {:ships  (:ships planet)
@@ -21,11 +22,11 @@
          [:div.panel-body
           [:table.table
            [:tbody
-            (trow "From" (str planet-position))
+            (trow "From" (position-formater planet-position))
 
             (trow "To" [:select.form-control {:on-change #(swap! internal-state assoc :target (-> % .-target .-value read-string))}
                         (for [p other-planet-positions]
-                          ^{:key p} [:option {:value (str p)} (str p)])])
+                          ^{:key p} [:option {:value (str p)} (position-formater p)])])
 
             (trow "Distance" [(fn [] (let [d @internal-state] [:p (distance planet-position (:target @internal-state))]))])
 

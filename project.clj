@@ -34,7 +34,7 @@
               :test-commands {"test" ["lein" "doo" "once"]}
               :builds {:dev {:source-paths ["src"]
                              :figwheel true
-                             :compiler {:main "cloko.frontend"
+                             :compiler {:main "cloko.frontend.core"
                                         :optimizations :none
                                         :pretty-print true
                                         :source-map true

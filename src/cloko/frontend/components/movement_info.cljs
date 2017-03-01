@@ -1,11 +1,12 @@
-(ns cloko.components.movement-info
-  (:require [cloko.core :refer [player-movements game-state]]))
+(ns cloko.frontend.components.movement-info
+  (:require [cloko.core :refer [player-movements game-state]]
+            [cloko.frontend.utils :refer [position-formater]]))
 
 (defn display-movement [movement]
   [:table.table.table-condensed
    [:tbody
-    [:tr [:td "From: "] [:td (str (:origin movement))]]
-    [:tr [:td "To: "] [:td (str (:target movement))]]
+    [:tr [:td "From: "] [:td (position-formater (:origin movement))]]
+    [:tr [:td "To: "] [:td (position-formater (:target movement))]]
     [:tr [:td "Ships: "] [:td (:ships movement)]]
     [:tr [:td "Rounds until arrival: "] [:td (:rounds-until-arrival movement)]]]])
 
