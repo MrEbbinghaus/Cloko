@@ -1,6 +1,8 @@
 # CloKo - Clojure Konquest! #
 
+[![GitHub version](https://badge.fury.io/gh/MrOerni%2FCloko.svg)](https://badge.fury.io/gh/MrOerni%2FCloko)
 [![Build Status](https://travis-ci.com/MrOerni/Cloko.svg?token=Rnk3s5asaiAz4eG6YMXs&branch=master)](https://travis-ci.com/MrOerni/Cloko)
+[![Code Climate](https://codeclimate.com/github/MrOerni/Cloko/badges/gpa.svg)](https://codeclimate.com/github/MrOerni/Cloko)
 
 ### What is this repository for? ###
 * A Konquest clone written in ClojureScript!
