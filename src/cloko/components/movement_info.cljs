@@ -19,4 +19,4 @@
           [:p "No movements!"]
           [:ul.list-group
            (for [movement movements]
-             ^{:key movement} [:li.list-group-item (display-movement movement)])])]])))
+             ^{:key (rand)} [:li.list-group-item (display-movement movement)])])]])))
