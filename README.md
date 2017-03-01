@@ -21,7 +21,7 @@
 * If you want to use live reloading tests run the development enviroment with: `lein figwheel devcard-test dev` and visit `http://0.0.0.0:3449/tests`
 
 ### Deployment instructions ###
-* Run `lein cljsbuild min once` to compile to a minified js file.
+* Run `lein cljsbuild once min` to compile to a minified js file.
 * Point your webserver to serve files from `resources/public`
 
 
