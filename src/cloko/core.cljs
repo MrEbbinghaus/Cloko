@@ -1,4 +1,5 @@
 (ns cloko.core
+  "The core of the cloko game from here you can play the game on the REPL."
   (:require [cljs.pprint :as pprint]
             [reagent.core :as reagent]
             [cognitect.transit :as transit]
@@ -7,10 +8,10 @@
 
 (def *distance-factor* 0.5)
 (def *defence-bonus* 1.1)
-(def *print-symbols* {:. "."
-                      :player1 "1"
-                      :player2 "2"
-                      :neutral "N"})
+(def print-symbols {:. "."
+                    :player1 "1"
+                    :player2 "2"
+                    :neutral "N"})
 
 (def initial-game-state {:world     {
                                      :size    [9, 9],
@@ -40,14 +41,14 @@
 
 (def game-state (reagent/atom initial-game-state))
 
-(defn random-positions [x y]
+(defn- random-positions [x y]
   (map vec (shuffle (combo/cartesian-product (range x) (range y)))))
 
-(defn gen-planet
+(defn- gen-planet
   ([owner spt] (gen-planet owner spt 0))
   ([owner spt ships] {:owner owner :ships-per-turn spt :ships 0}))
 
-(defn gen-game-state [size planets players]
+(defn- gen-game-state [size planets players]
   {:world     {
                :size    size,
                :planets planets}
@@ -58,8 +59,14 @@
    :round     0
    :players   players})
 
-
 (defn init!
+  "If no argument is given, init! will set the game to an example game-state. (Mostly for debugging)
+  Otherwise init! takes four arguments.
+  First and second: width and height of the world.
+  Thrid: amount of random neutral planets (>= 0).
+  Fourth: number of human players. (>= 0)
+  You are responsible to choose a large enough world size so that there is enoug space for all the planets.
+  (A world size of 9x9 is recommended)"
   ([] (reset! game-state initial-game-state))
   ([x y n player]
    (let [positions (random-positions x y)
@@ -71,8 +78,12 @@
          planets (merge player-planets neutral-planets)]
      (reset! game-state (gen-game-state [x y] planets players)))))
 
-
 (defn whose-turn
+  "Gets either none, one or two arguments.
+  If none argument is given, the current-player will be returned.
+  If one argument is given, the argument has to be a game-state map from which the current player will be returned.
+  If two arguments are given, the first argument has to be the position in line of waiting players
+  (0 = current player, 1 = next player, ...). The second argument has to be a game-state map"
   ([] (whose-turn @game-state))
   ([state] (whose-turn 0 state))
   ([steps state] (nth (cycle (:players state)) (+ (:whoseTurn state) (if (pos? steps) steps 0)))))
@@ -90,7 +101,7 @@
   [player planet]
   (= player (:owner planet)))
 
-(defn players-planets
+(defn- players-planets
   "Returns a map of only the planets which belong to player "
   [player planets]
   (->> (filter (fn [[_ planet]] (player-owns-planet? player planet)) planets)
@@ -99,7 +110,8 @@
 
 (defn show-board!
   "Prints the current world. Dots represent empty fields.
-  Numbers represent planets of the corresonding player. 'N' belongs to the neutral player"
+  Numbers represent planets of the corresonding player. 'N' belongs to the neutral player.
+  You may want to reset 'print-symbols' if you play with more then two people on the REPL!"
   []
   (let [state @game-state
         planets (get-in state [:world :planets])
@@ -110,7 +122,7 @@
                               (place-planets (world-as-dots dims))
                               (interpose "\n")
                               (flatten)
-                              (replace *print-symbols*)
+                              (replace print-symbols)
                               (println))
                          ; Print current players planets
                          (->> planets
@@ -120,7 +132,7 @@
                               (pprint/print-table keys-to-print))))))
 
 (defn players-turn?
-  "Returns true if it is players turn."
+  "Returns true if it is players turn, false otherwise."
   [player]
   (= player (whose-turn)))
 
@@ -130,6 +142,7 @@
   (Math/sqrt (+ (* a a) (* b b))))
 
 (defn distance
+  "Gets to positions of planets as vectors and returns the ingame-distance in rounds between them."
   [from to]
   (let [[x1 y1] from
         [x2 y2] to]
@@ -167,13 +180,20 @@
 
 (defn- enough-ships-on-planet?
   [planet amount]
-  (>= (:ships planet) amount))
+  (>= (:ships planet) amount 0))
 
 (defn- print-failure [msg state]
   (print msg)
   state)
 
 (defn send!
+  "Sends ships from one planet to another. Gets a vector of the position of the origin planet, a vector of the target
+   planet and a positive amount of ships to send.
+   Prints 'meaningfull' failure messages if the current player isn't the owner of the origin planet, there are not
+   enough ships on the origin planet, the target isn't a planet or the target is equal to the orgin.
+   eg.: (send! [0 0] [1 1] 10)
+
+   May get as a fourth argument a game-state map. In this case the function is pure (except for the prints)"
   ([from to amount]
    (swap! game-state #(send! from to amount %)))
   ([from to amount state]
@@ -189,6 +209,7 @@
      (print-failure "from = to!" state))))
 
 (defn movements! []
+  "Returns all movements of the current player"
   (let [state @game-state
         current-player (whose-turn state)
         movements (:movements state)
@@ -233,10 +254,9 @@
   (assoc-in planet [:owner] new-owner))
 
 (defn- fight
-  "Calculates the remaining ships. A negativ number indicates a win of the attacker.
-  This"
+  "Calculates the remaining ships. A negativ number indicates a win of the attacker."
   ([a d] (- d a))
-  ([a d b] (let [db (* d b)
+  ([a d b] (let [db (* d b *defence-bonus*)
                  absolute (+ db a)
                  r (- db a)]
              (cond
@@ -312,7 +332,7 @@
     (end-round state)
     (update-in state [:whoseTurn] inc)))
 
-(defn end-turn! [] (swap! game-state end-turn))
+(defn end-turn! "Ends the turn of the current player" [] (swap! game-state end-turn))
 
 (defn- save [o]
   (let [w (transit/writer :json)]
@@ -322,8 +342,9 @@
   (let [r (transit/reader :json)]
     (transit/read r transit)))
 
-(defn save! []
+(defn save! "Returns the current state as a transit (similar to EDN) string."[]
   (save @game-state))
 
-(defn load! [input]
+(defn load! "Gets a transit string and sets the game-state accordingly"
+  [input]
   (reset! game-state (load input)))
