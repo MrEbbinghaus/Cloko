@@ -276,7 +276,6 @@
     (disj :neutral)
     (vec)))
 
-
 (defn- print-victory-message [player]
   (println (name player) " wins!\nYou may end the game now."))
 
@@ -286,7 +285,7 @@
 
 (defn- set-remaining-players
   [state]
-  (assoc-in state [:players] (get-remaining-players state)))
+  (assoc-in state [:players] (sort (get-remaining-players state))))
 
 (defn- end-round
   [game-state]

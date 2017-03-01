@@ -7,7 +7,8 @@
             [cloko.frontend.components.board :refer [board]]
             [cloko.frontend.components.send :refer [send-panel]]
             [cloko.frontend.components.save-load :refer [save-component load-component]]
-            [cloko.frontend.components.init :refer [init-component]]))
+            [cloko.frontend.components.init :refer [init-component]]
+            [cloko.frontend.components.game-info :refer [game-info]]))
 
 (def next-turn-btn [:div.col-xs-1 [:button.btn.btn-danger
                                    {:on-click #((reset! fe-state {}) (core/end-turn!))}
@@ -19,7 +20,7 @@
   (let [state @core/game-state]
     [:div.panel.panel-default
      [:div.panel-body
-      [:div.row (whose-turn state)]
+      [game-info]
       [:div.row [:div.col-md-12.center [board]]]
       [:div.row
        [:div.col-sm-6 [planet-info-panel]]
