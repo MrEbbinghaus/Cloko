@@ -2,7 +2,7 @@
   :license {:name "MIT License"
             :url "http://opensource.org/licenses/MIT"}
   :dependencies [[org.clojure/clojure "1.8.0"]
-                 [org.clojure/clojurescript "1.9.473"]
+                 [org.clojure/clojurescript "1.9.494"]
                  [org.clojure/test.check "0.9.0"]
                  [devcards "0.2.2"]
                  [lein-doo "0.1.7"]
