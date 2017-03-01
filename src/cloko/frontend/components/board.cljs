@@ -7,10 +7,12 @@
 (def nplanet-icon [:img {:src "assets/planets/mars.svg"}])
 
 (defn set-selected-position!
+  "Sets pos as the selected planet in the frontend state."
   [pos]
   (swap! fe-state assoc :selected-planet pos))
 
 (defn field
+  "Returns a react component of a field on the board. Gets two coordinates of the field."
   [x y]
   (fn []
     (let [world (:world @game-state)
@@ -27,6 +29,7 @@
                                    :height (str height "%")}}]))))
 
 (defn board []
+  "Return a react component of the board."
   (fn []
     (let [world (:world @game-state)
           [x-size y-size] (:size world)
