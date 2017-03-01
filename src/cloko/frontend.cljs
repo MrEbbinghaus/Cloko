@@ -4,7 +4,7 @@
             [cloko.components.planet-info :refer [planet-info-panel]]
             [cloko.components.movement-info :refer [movement-info-panel]]
             [cloko.components.board :refer [board]]
-            [cloko.components.send :as send]))
+            [cloko.components.send :refer [send-panel]]))
 
 (defonce fe-state (r/atom {}))
 (defn reset-fe! []
@@ -28,7 +28,7 @@
      [:div.row (if (and
                        (= (core/whose-turn state) (:owner selected-planet))
                        (pos? (get-in state [:world :planets (get-in state [:fe :selected-planet]) :ships])))
-                 [:div.col-xs-12 [send/send-panel state]]
+                 [:div.col-xs-12 [send-panel]]
                  (.log js/console))]
      [:div.row next-turn-btn]]))
 

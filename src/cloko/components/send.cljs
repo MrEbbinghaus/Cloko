@@ -1,51 +1,44 @@
 (ns cloko.components.send
   (:require [reagent.core :as r]
-            [cloko.core :as core]
+            [cloko.core :refer [game-state whose-turn distance send!]]
             [cljs.reader :refer [read-string]]))
 
-(defonce data (r/atom {:ships 0}))
-
-(defn send [& es]
-  (doseq [e es]
-    (.log js/console e))
-  true)
-
 (defn trow [& elements]
-  (fn [] [:tr (for [e elements]
-                ^{:key (rand)} [:td e])]))
+  [:tr (for [e elements]
+         ^{:key (rand)} [:td e])])
 
-(defn slider-component [min max step]
+(defn send-panel []
   (fn []
-    [:div [:input {:type :range
-                   :min min
-                   :max max
-                   :step step
-                   :value (:ships @data)
-                   :on-change #(swap! data assoc-in [:ships] (-> % .-target .-value read-string))}]
-     [:p (:ships @data)]]))
-
-(defn select-component [positions]
-  (fn []
-    [:select.form-control {:on-change #(swap! data assoc-in [:target] (-> % .-target .-value read-string))}
-     (for [p positions]
-       ^{:key p} [:option {:value (str p)} (str p)])]))
-
-
-(defn send-panel [state]
-  (fn []
-    (let [current-player (core/whose-turn state)
+    (let [state @game-state
+          current-player (whose-turn state)
           planet-position (get-in state [:fe :selected-planet])
           planet (get-in state [:world :planets planet-position])
-          p-positions (remove #(= % planet-position) (keys (get-in state [:world :planets])))]
+          other-planet-positions (remove #(= % planet-position) (keys (get-in state [:world :planets])))
+          internal-state (r/atom {:ships  (:ships planet)
+                                  :target (first other-planet-positions)})]
         [:div.panel.panel-default
          [:div.panel-heading "Send fleets"]
-         [:div.panel-body.input-group
+         [:div.panel-body
           [:table.table
            [:tbody
-            [trow "From" (str planet-position)]
-            [trow "To" [select-component p-positions]]
-            [trow "How many" [slider-component 0 (:ships planet) 1]]]]
+            (trow "From" (str planet-position))
+
+            (trow "To" [:select.form-control {:on-change #(swap! internal-state assoc :target (-> % .-target .-value read-string))}
+                        (for [p other-planet-positions]
+                          ^{:key p} [:option {:value (str p)} (str p)])])
+
+            (trow "Distance" [(fn [] (let [d @internal-state] [:p (distance planet-position (:target @internal-state))]))])
+
+            (trow "How many" [:div.input-group
+                              [:span.input-group-addon "0"]
+                              [:input {:type :range
+                                       :min 0
+                                       :max (:ships planet)
+                                       :step 1
+                                       :on-change #(swap! internal-state assoc-in [:ships] (-> % .-target .-value read-string))}]
+                              [:span.input-group-addon (:ships planet)]
+                              [(fn [] [:span.input-group-addon (:ships @internal-state)])]])]]
 
           [:button.btn.btn-success
-           {:on-click #(let [fdata @data] (core/send! planet-position (get-in fdata [:target]) (get-in fdata [:ships])))}
+           {:on-click #(let [fdata @internal-state] (send! planet-position (get-in fdata [:target]) (get-in fdata [:ships])))}
            "Send!"]]])))
