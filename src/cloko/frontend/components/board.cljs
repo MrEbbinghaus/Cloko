@@ -11,20 +11,30 @@
   (swap! fe-state assoc :selected-planet pos))
 
 (defn field
-  [planet [x y]]
-  (if planet
-    [:div.field.planet
-     {:data-x x :data-y y :on-click #(set-selected-position! [x y])}
-     (if (= :neutral (:owner planet)) nplanet-icon planet-icon)]
-    [:div.field.space]))
-
-(defn row
-  [x y-size planets]
-  (mapv #(field (get-in planets [[% x]] nil) [% x]) (range y-size)))
+  [x y]
+  (fn []
+    (let [world (:world @game-state)
+          planet (get-in world [:planets [x y]] nil)
+          [width height] (mapv #(/ 100 %) (:size world))]
+      (if planet
+        [:div.field.planet
+         {:style {:width (str width "%")
+                  :height (str height "%")}
+          :data-x x :data-y y
+          :on-click #(set-selected-position! [x y])}
+         (if (= :neutral (:owner planet)) nplanet-icon planet-icon)]
+        [:div.field.space {:style {:width (str width "%")
+                                   :height (str height "%")}}]))))
 
 (defn board []
   (fn []
-    (let [state @game-state
-          [x-size y-size] (get-in state [:world :size])
-          planets (get-in state [:world :planets])]
-      (vec (apply concat [:div.board] (mapv #(row % y-size planets) (range x-size)))))))
+    (let [world (:world @game-state)
+          [x-size y-size] (:size world)
+          planets (:planets world)]
+      [:div.outer-board
+       [:div.inner-board
+        {:style {:width (* 55 x-size)
+                 :height (* 55 y-size)}}
+
+        (for [x (range x-size) y (range y-size)]
+          ^{:key [x y]} [field x y])]])))
