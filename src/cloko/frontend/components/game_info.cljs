@@ -1,10 +1,8 @@
 (ns cloko.frontend.components.game-info
   (:require [cloko.core :refer [game-state whose-turn]]))
 
-
-
-
 (defn game-info []
+  "Returns a react component of a row with informations about the current player, the next player, a possbile winner and the number of the round."
   (fn []
     (let [state @game-state]
       [:div.row
