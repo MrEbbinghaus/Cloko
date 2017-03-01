@@ -11,12 +11,14 @@
 * Make sure you installed leinigen.
 * Set up the development enviroment with `lein figwheel`.
 * Visit `http://0.0.0.0:3449` to use connect the repl or play with the UI.
+* To directly call the core functions, call `(in-ns 'cloko.core)` first.
 
 #### Compile sass ###
 * Install sass
 * Run `sass --watch resources/public/css/styles.sass:resources/public/css/styles.css`
 
-#### How to run tests ####
+#### How t run tests ####
+* Requirements: `phantomjs`
 * Simply run: `lein test`
 * If you want to use live reloading tests run the development enviroment with: `lein figwheel devcard-test dev` and visit `http://0.0.0.0:3449/tests`
 

@@ -52,8 +52,6 @@
   {:world     {
                :size    size,
                :planets planets}
-
-
    :movements []
    :whoseTurn 0
    :round     0

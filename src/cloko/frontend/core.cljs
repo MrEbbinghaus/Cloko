@@ -46,6 +46,7 @@
 (defn ^:export main
   "Renders the react app on page load."
   []  ;; do not forget the export
+  (reset! fe-state {})
   (core/init! 9 9 3 2)
   (r/render [cloko-app]
             (.getElementById js/document "app")))
