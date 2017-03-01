@@ -9,8 +9,7 @@
 
 (deftest distance-test
   (testing "Planets next to each other are at least 1 distance."
-    (is (< 0
-           (cloko.core/distance [0 0] [1 0])))))
+    (is (pos? (cloko.core/distance [0 0] [1 0])))))
 
 (deftest players-planets-test
   (testing "Return all planets of a player."
