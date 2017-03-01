@@ -14,9 +14,8 @@
                                    {:on-click #((reset! fe-state {}) (core/end-turn!))}
                                    "Next turn"]])
 
-(defn whose-turn [state] [:div.col-xs-1 [:label.label.label-info.full-width (name (get (:players state) (:whoseTurn state)))]])
-
-(defn app []
+(defn cloko-app []
+  "Returns a react component of the cloko app"
   (let [state @core/game-state]
     [:div.panel.panel-default
      [:div.panel-body
@@ -44,7 +43,9 @@
             [:div.col-sm-4 [load-component]]
             [:div.col-sm-4 [init-component]]]]]]]]]]))
 
-(defn ^:export main []  ;; do not forget the export
+(defn ^:export main
+  "Renders the react app on page load."
+  []  ;; do not forget the export
   (core/init! 9 9 3 2)
-  (r/render [app]
+  (r/render [cloko-app]
             (.getElementById js/document "app")))
