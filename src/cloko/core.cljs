@@ -74,8 +74,8 @@
 
 (defn whose-turn
   ([] (whose-turn @game-state))
-  ([state] (get-in state [:players (:whoseTurn state)])))
-
+  ([state] (whose-turn 0 state))
+  ([steps state] (nth (cycle (:players state)) (+ (:whoseTurn state) (if (pos? steps) steps 0)))))
 
 (defn- place-planets [world planets]
   (reduce #(assoc-in %1 (reverse (get %2 0)) (get-in %2 [1 :owner])) world planets))

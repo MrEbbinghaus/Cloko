@@ -217,6 +217,15 @@
                      :world {:planets {[0 0] {:owner :player1}
                                        [1 1] {:owner :player1}}}})))))
 
+(deftest whose-turn-test
+         (testing "Basic"
+           (is (= :player3 (cloko.core/whose-turn {:players [:player1 :player2 :player3] :whoseTurn 2})))
+           (is (= :player1 (cloko.core/whose-turn {:players [:player1 :player2 :player3] :whoseTurn 0})))
+           (is (= :player1 (cloko.core/whose-turn {:players [:player1 :player2 :player3] :whoseTurn 3}))))
+         (testing "whos next"
+           (is (= :player2 (cloko.core/whose-turn 1 {:players [:player1 :player2 :player3] :whoseTurn 0})))
+           (is (= :player1 (cloko.core/whose-turn 1 {:players [:player1 :player2 :player3] :whoseTurn 2})))))
+
 ;(deftest load-safe-test
 ;         (testing "safe -> load stays the same"
 ;           (let [check (tc/quick-check 100 (prop/for-all [input gen/any-printable]
