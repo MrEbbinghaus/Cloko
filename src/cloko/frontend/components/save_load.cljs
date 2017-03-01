@@ -3,6 +3,7 @@
             [reagent.core :refer [atom]]))
 
 (defn save-component []
+  "Returns a react component which displayes the current state of the game as a transit string"
   (fn []
     [:div.panel.panel-default
      [:div.panel-heading "Save"]
@@ -12,6 +13,7 @@
                             :value (save @game-state)}]]]))
 
 (defn load-component []
+  "Returns a react component which gets a transit string and sets it as the new game state on confirmation."
   (fn []
     (let [internal-state (atom "")]
       [:div.panel.panel-default
