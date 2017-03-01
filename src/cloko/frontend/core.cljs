@@ -5,7 +5,8 @@
             [cloko.frontend.components.planet-info :refer [planet-info-panel]]
             [cloko.frontend.components.movement-info :refer [movement-info-panel]]
             [cloko.frontend.components.board :refer [board]]
-            [cloko.frontend.components.send :refer [send-panel]]))
+            [cloko.frontend.components.send :refer [send-panel]]
+            [cloko.frontend.components.save-load :refer [save-component load-component]]))
 
 (def next-turn-btn [:div.col-xs-1 [:button.btn.btn-danger
                                    {:on-click #((reset! fe-state {}) (core/end-turn!))}
@@ -27,7 +28,16 @@
                           (= (core/whose-turn state) (:owner selected-planet))
                           (pos? (:ships selected-planet)))
                       [:div.col-xs-12 [send-panel]])))]]
-     [:div.row next-turn-btn]]))
+     [:div.row next-turn-btn]
+     [:div.row
+      [:div.col-sm-12
+       [:div.panel.panel-default
+        [:div.panel-heading
+         [:a {:data-toggle "collapse" :href "#collapse1"} "Fold out"]]
+        [:div#collapse1.panel-collapse.collapse
+         [:div.panel-body
+          [:div.col-sm-6 [save-component]]
+          [:div.col-sm-6 [load-component]]]]]]]]))
 
 (defn ^:export main []  ;; do not forget the export
   (core/init! 9 9 3 2)
