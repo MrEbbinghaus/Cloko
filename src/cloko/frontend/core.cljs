@@ -16,28 +16,29 @@
 
 (defn app []
   (let [state @core/game-state]
-    [:div.panel-body
-     [:div.row (whose-turn state)]
-     [:div.row [:div.col-md-12.center [board]]]
-     [:div.row
-      [:div.col-sm-6 [planet-info-panel]]
-      [:div.col-sm-6 [movement-info-panel]]]
-     [:div.row [(fn []
-                  (let [selected-planet (get-in state [:world :planets (get-in @fe-state [:selected-planet])])]
-                    (if (and
-                          (= (core/whose-turn state) (:owner selected-planet))
-                          (pos? (:ships selected-planet)))
-                      [:div.col-xs-12 [send-panel]])))]]
-     [:div.row next-turn-btn]
-     [:div.row
-      [:div.col-sm-12
-       [:div.panel.panel-default
-        [:div.panel-heading
-         [:a {:data-toggle "collapse" :href "#collapse1"} "Fold out"]]
-        [:div#collapse1.panel-collapse.collapse
-         [:div.panel-body
-          [:div.col-sm-6 [save-component]]
-          [:div.col-sm-6 [load-component]]]]]]]]))
+    [:div.panel.panel-default
+     [:div.panel-body
+      [:div.row (whose-turn state)]
+      [:div.row [:div.col-md-12.center [board]]]
+      [:div.row
+       [:div.col-sm-6 [planet-info-panel]]
+       [:div.col-sm-6 [movement-info-panel]]]
+      [:div.row [(fn []
+                   (let [selected-planet (get-in state [:world :planets (get-in @fe-state [:selected-planet])])]
+                     (if (and
+                           (= (core/whose-turn state) (:owner selected-planet))
+                           (pos? (:ships selected-planet)))
+                       [:div.col-xs-12 [send-panel]])))]]
+      [:div.row next-turn-btn]
+      [:div.row
+       [:div.col-sm-12
+        [:div.panel.panel-default
+         [:div.panel-heading
+          [:a {:data-toggle "collapse" :href "#collapse1"} "Fold out"]]
+         [:div#collapse1.panel-collapse.collapse
+          [:div.panel-body
+           [:div.col-sm-6 [save-component]]
+           [:div.col-sm-6 [load-component]]]]]]]]]))
 
 (defn ^:export main []  ;; do not forget the export
   (core/init! 9 9 3 2)
