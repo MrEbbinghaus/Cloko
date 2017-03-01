@@ -98,7 +98,7 @@ dev:cljs.user=> (cloko.core/show-board!)
 ### UI
 Mit der UI kann unter [0.0.0.0:3449](0.0.0.0:3449) oder unter [cloko.ebbinghaus.me](http://cloko.ebbinghaus.me) gespielt werden.
 
-![Screenshot](https://github.com/mroerni/Cloko/screenshot.png "Screenshot from cloko.ebbinghaus.me")
+![Screenshot](https://github.com/MrOerni/Cloko/blob/master/screenshot.png?raw=true "Screenshot from cloko.ebbinghaus.me")
 
 #### Erklärung der UI von oben nach unten.
 
