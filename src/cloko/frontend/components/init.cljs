@@ -4,6 +4,7 @@
             [cljs.reader :refer [read-string]]))
 
 (defn init-component []
+  "Returns a react component with selection possibiltys for parameters for a new initialization of the game."
   (fn []
     (let [internal-state (atom {:x-size 9
                                 :y-size 9
