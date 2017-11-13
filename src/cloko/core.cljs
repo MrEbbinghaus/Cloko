@@ -1,6 +1,7 @@
 (ns cloko.core
   "The core of the cloko game from here you can play the game on the REPL."
   (:require [cljs.pprint :as pprint]
+            [cljs.spec.alpha :as s]
             [reagent.core :as reagent]
             [cognitect.transit :as transit]
             [clojure.math.combinatorics :as combo]))
@@ -35,9 +36,30 @@
                                       :ships 10
                                       :rounds-until-arrival 3}]
 
-                         :whoseTurn 0
+                         :whose-turn 0
                          :round     0
-                         :players   [:player1 :player2]})
+                         :players   [:player1 :player2]
+                         :log []})
+
+(s/def ::owner keyword?)
+(s/def ::ships-per-turn pos-int?)
+(s/def ::ships pos-int?)
+(s/def ::rounds-until-arrival pos-int?)
+(s/def ::planet (s/keys :req-un [::owner ::ships-per-turn ::ships]))
+(s/def ::planets (s/map-of ::coordinates ::planet))
+(s/def ::coordinates (s/coll-of pos-int? :kind vector? :count 2))
+(s/def ::origin ::coordinates)
+(s/def ::target ::coordinates)
+(s/def ::movement (s/keys :req-un [::origin ::target ::owner ::ships ::rounds-until-arrival]))
+(s/def ::movements (s/coll-of ::movement))
+(s/def ::size ::coordinates)
+(s/def ::world (s/keys :req-un [::size ::planets]))
+(s/def ::whose-turn pos-int?)
+(s/def ::round pos-int?)
+(s/def ::players (s/coll-of ::owner :kind vector?))
+(s/def ::log coll?)
+(s/def ::state (s/keys :req-un [::world ::movements ::whose-turn ::round ::log]))
+
 
 (def game-state (reagent/atom initial-game-state))
 
@@ -53,9 +75,15 @@
                :size    size,
                :planets planets}
    :movements []
-   :whoseTurn 0
+   :whose-turn 0
    :round     0
    :players   players})
+
+(s/fdef gen-game-state
+        :args (s/cat :size ::size
+                     :planets ::planets
+                     :players ::players)
+        :ret ::state)
 
 (defn init!
   "If no argument is given, init! will set the game to an example game-state. (Mostly for debugging)
@@ -84,7 +112,7 @@
   (0 = current player, 1 = next player, ...). The second argument has to be a game-state map"
   ([] (whose-turn @game-state))
   ([state] (whose-turn 0 state))
-  ([steps state] (nth (cycle (:players state)) (+ (:whoseTurn state) (if (pos? steps) steps 0)))))
+  ([steps state] (nth (cycle (:players state)) (+ (:whose-turn state) (if (pos? steps) steps 0)))))
 
 (defn- place-planets [world planets]
   (reduce #(assoc-in %1 (reverse (get %2 0)) (get-in %2 [1 :owner])) world planets))
@@ -308,7 +336,7 @@
 (defn- end-round
   [game-state]
   (-> game-state
-      (assoc-in [:whoseTurn] 0)
+      (assoc-in [:whose-turn] 0)
       (update-in [:world :planets] generate-all-ships)
       (update-in [:movements] update-movements)
       (#(update-in % [:world :planets] fight-for-planets (arrived-fleets (:movements %))))
@@ -326,9 +354,9 @@
 (defn- end-turn
   ; Complected!
   [state]
-  (if (cycle-complete? (:whoseTurn state) (:players state))
+  (if (cycle-complete? (:whose-turn state) (:players state))
     (end-round state)
-    (update-in state [:whoseTurn] inc)))
+    (update-in state [:whose-turn] inc)))
 
 (defn end-turn! "Ends the turn of the current player" [] (swap! game-state end-turn))
 
