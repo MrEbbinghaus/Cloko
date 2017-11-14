@@ -1,0 +1,41 @@
+.planet-img {
+    width: 11%;
+    height: 11%;
+}
+
+.field {
+    float: left;
+    padding: 5px;
+    width: 11%;
+    height: 11%;
+    display: table-cell;
+}
+
+.center {
+    text-align: center;
+}
+
+.inner-board {
+    width: 500px;
+    height: 500px;
+}
+
+.outer-board {
+    padding: 15px;
+    display: inline-block;
+    background-color: #0d0d0d;
+}
+
+.full-width {
+    display: block;
+}
+
+.footer {
+    position: static;
+    bottom: 0;
+    width: 100%;
+    /* Set the fixed height of the footer here */
+    height: 60px;
+    line-height: 60px;
+    /* Vertically center the text there */;
+}

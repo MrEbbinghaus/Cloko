@@ -81,7 +81,7 @@ fabric.properties
 /resources/public/cljs/
 /resources/public/.sass-cache/*
 .sass-cache
-*.css
 *.css.map
 /node_modules/
 cloko_deploy_key
+resources/public/css/debug.css

@@ -129,20 +129,6 @@
 (deftest end-round-test
          (testing "Basic test TODO This is a win situation!"
            (is (=
-                 {:world     {
-                              :planets {
-                                        [1, 1]
-                                        {:owner          :player1
-                                         :ships-per-turn 4
-                                         :ships          14}
-                                        [7, 7]
-                                        {:owner          :player1
-                                         :ships-per-turn 4
-                                         :ships          6}}}
-                  :movements []
-                  :whoseTurn 0
-                  :round     1
-                  :players   [:player1]}
                  (cloko.core/end-round {:world     {
                                                     :planets {
                                                               [1, 1]
@@ -159,9 +145,23 @@
                                                      :owner :player1
                                                      :ships 20
                                                      :rounds-until-arrival 1}]
-                                        :whoseTurn 0
+                                        :whose-turn 1
                                         :round     0
-                                        :players   [:player1 :player2]})))))
+                                        :players   [:player1 :player2]})
+                 {:world     {
+                              :planets {
+                                        [1, 1]
+                                        {:owner          :player1
+                                         :ships-per-turn 4
+                                         :ships          14}
+                                        [7, 7]
+                                        {:owner          :player1
+                                         :ships-per-turn 4
+                                         :ships          6}}}
+                  :movements []
+                  :whose-turn 0
+                  :round     1
+                  :players   [:player1]}))))
 
 (deftest arrived-fleets-test
          (testing ""
@@ -218,12 +218,12 @@
 
 (deftest whose-turn-test
          (testing "Basic"
-           (is (= :player3 (cloko.core/whose-turn {:players [:player1 :player2 :player3] :whoseTurn 2})))
-           (is (= :player1 (cloko.core/whose-turn {:players [:player1 :player2 :player3] :whoseTurn 0})))
-           (is (= :player1 (cloko.core/whose-turn {:players [:player1 :player2 :player3] :whoseTurn 3}))))
+           (is (= :player3 (cloko.core/whose-turn {:players [:player1 :player2 :player3] :whose-turn 2})))
+           (is (= :player1 (cloko.core/whose-turn {:players [:player1 :player2 :player3] :whose-turn 0})))
+           (is (= :player1 (cloko.core/whose-turn {:players [:player1 :player2 :player3] :whose-turn 3}))))
          (testing "whos next"
-           (is (= :player2 (cloko.core/whose-turn 1 {:players [:player1 :player2 :player3] :whoseTurn 0})))
-           (is (= :player1 (cloko.core/whose-turn 1 {:players [:player1 :player2 :player3] :whoseTurn 2})))))
+           (is (= :player2 (cloko.core/whose-turn 1 {:players [:player1 :player2 :player3] :whose-turn 0})))
+           (is (= :player1 (cloko.core/whose-turn 1 {:players [:player1 :player2 :player3] :whose-turn 2})))))
 
 ;(deftest load-safe-test
 ;         (testing "safe -> load stays the same"
