@@ -1,29 +1,12 @@
-.planet-img {
-    width: 11%;
-    height: 11%;
-}
-
-.field {
-    float: left;
-    padding: 5px;
-    width: 11%;
-    height: 11%;
-    display: table-cell;
-}
-
 .center {
     text-align: center;
 }
 
-.inner-board {
-    width: 500px;
-    height: 500px;
-}
-
-.outer-board {
+.board-wrapper {
+    width: 100%;
+    height: 100%;
     padding: 15px;
     display: inline-block;
-    background-color: #0d0d0d;
 }
 
 .full-width {
@@ -38,4 +21,34 @@
     height: 60px;
     line-height: 60px;
     /* Vertically center the text there */;
+}
+
+circle.planet.selected {
+    stroke: yellow;
+    stroke-width: 0.025;
+}
+
+svg.board {
+    background-color: #000000;
+}
+
+/* Fallback for planet colors */
+circle.planet {
+    fill: pink;
+}
+
+circle.planet.player1 {
+    fill: red;
+}
+
+circle.planet.player2 {
+    fill: green;
+}
+
+circle.planet.player3 {
+    fill: blue;
+}
+
+circle.planet.neutral {
+    fill: white;
 }
