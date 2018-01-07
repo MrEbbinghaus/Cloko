@@ -1,2 +1,8 @@
 .idea/
 cloko.iml
+.lein-failures
+.sass-cache/
+figwheel_server.log
+out/
+resources/
+target/
