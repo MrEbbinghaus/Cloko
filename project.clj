@@ -1,7 +1,7 @@
 (defproject cloko "1.2.0"
   :license {:name "MIT License"
             :url "http://opensource.org/licenses/MIT"}
-  :dependencies [[org.clojure/clojure "1.8.0"]
+  :dependencies [[org.clojure/clojure "1.9.0"]
                  [org.clojure/clojurescript "1.9.946"]
                  [org.clojure/test.check "0.9.0"]
                  [devcards "0.2.4"]
