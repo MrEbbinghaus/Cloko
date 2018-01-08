@@ -52,3 +52,8 @@ circle.planet.player3 {
 circle.planet.neutral {
     fill: white;
 }
+
+polygon.fleet {
+    fill: grey;
+    stroke-linejoin: round;
+}
